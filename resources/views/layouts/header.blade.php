@@ -46,8 +46,8 @@
                         <button class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-slate-800 p-1 pr-2 rounded-full transition-colors cursor-pointer border-none focus:outline-none">
                             <img class="object-cover w-8 h-8 rounded-full border border-gray-200 dark:border-gray-700" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80" alt="Avatar">
                             <div class="hidden sm:block text-left text-sm">
-                                <p class="font-semibold text-gray-700 dark:text-gray-200 leading-tight">Harusnya nama</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Admin</p>
+                                <p class="font-semibold text-gray-700 dark:text-gray-200 leading-tight">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ Auth::user()->role }}</p>
                             </div>
                         </button>
                     </x-slot>
