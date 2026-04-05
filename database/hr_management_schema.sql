@@ -13,7 +13,7 @@ SET NAMES utf8mb4;
 -- 1. USERS (Auth & System Access)
 -- ============================================================
 CREATE TABLE `users` (
-  `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`                CHAR(36) NOT NULL,
   `name`              VARCHAR(100) NOT NULL,
   `email`             VARCHAR(150) NOT NULL,
   `email_verified_at` TIMESTAMP NULL DEFAULT NULL,
@@ -22,8 +22,8 @@ CREATE TABLE `users` (
   `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
   `remember_token`    VARCHAR(100) NULL DEFAULT NULL,
   -- Audit
-  `created_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`        CHAR(36) NULL DEFAULT NULL,
+  `updated_by`        CHAR(36) NULL DEFAULT NULL,
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -34,11 +34,11 @@ CREATE TABLE `users` (
 -- 2. DIVISIONS / DEPARTMENTS
 -- ============================================================
 CREATE TABLE `divisions` (
-  `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`                CHAR(36) NOT NULL,
   `division_code`     VARCHAR(20) NOT NULL COMMENT 'e.g. ENG, MRK, FIN',
   `name`              VARCHAR(100) NOT NULL,
-  `parent_id`         BIGINT UNSIGNED NULL DEFAULT NULL,
-  `head_employee_id`  BIGINT UNSIGNED NULL DEFAULT NULL,
+  `parent_id`         CHAR(36) NULL DEFAULT NULL,
+  `head_employee_id`  CHAR(36) NULL DEFAULT NULL,
   `head_title`        VARCHAR(100) NULL DEFAULT NULL,
   `cost_center`       VARCHAR(50) NULL DEFAULT NULL,
   `description`       TEXT NULL DEFAULT NULL,
@@ -46,8 +46,8 @@ CREATE TABLE `divisions` (
   `max_headcount`     SMALLINT UNSIGNED NULL DEFAULT NULL,
   `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
   -- Audit
-  `created_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`        CHAR(36) NULL DEFAULT NULL,
+  `updated_by`        CHAR(36) NULL DEFAULT NULL,
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -62,16 +62,16 @@ CREATE TABLE `divisions` (
 -- 3. EMPLOYEES (Core entity)
 -- ============================================================
 CREATE TABLE `employees` (
-  `id`                      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id`                 BIGINT UNSIGNED NULL DEFAULT NULL,
+  `id`                      CHAR(36) NOT NULL,
+  `user_id`                 CHAR(36) NULL DEFAULT NULL,
   `employee_number`         VARCHAR(20) NOT NULL COMMENT 'e.g. EMP-1025',
   `full_name`               VARCHAR(150) NOT NULL,
   `profile_photo`           VARCHAR(255) NULL DEFAULT NULL,
 
   -- Position & Record
   `job_title`               VARCHAR(100) NOT NULL,
-  `division_id`             BIGINT UNSIGNED NULL DEFAULT NULL,
-  `manager_id`              BIGINT UNSIGNED NULL DEFAULT NULL,
+  `division_id`             CHAR(36) NULL DEFAULT NULL,
+  `manager_id`              CHAR(36) NULL DEFAULT NULL,
   `work_email`              VARCHAR(150) NULL DEFAULT NULL,
   `work_location`           VARCHAR(100) NULL DEFAULT NULL,
   `employment_status`       ENUM('active','probation','contract','internship','inactive') NOT NULL DEFAULT 'active',
@@ -96,8 +96,8 @@ CREATE TABLE `employees` (
   `nationality`             VARCHAR(50) NOT NULL DEFAULT 'Indonesian',
 
   -- Audit
-  `created_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`              CHAR(36) NULL DEFAULT NULL,
+  `updated_by`              CHAR(36) NULL DEFAULT NULL,
   `created_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -121,8 +121,8 @@ ALTER TABLE `divisions`
 -- 4. EMPLOYEE OFFICIAL IDs
 -- ============================================================
 CREATE TABLE `employee_identities` (
-  `id`                      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`             BIGINT UNSIGNED NOT NULL,
+  `id`                      CHAR(36) NOT NULL,
+  `employee_id`             CHAR(36) NOT NULL,
   `nik_ktp`                 CHAR(16) NULL DEFAULT NULL,
   `npwp`                    VARCHAR(25) NULL DEFAULT NULL,
   `bpjs_ketenagakerjaan`    VARCHAR(30) NULL DEFAULT NULL,
@@ -134,8 +134,8 @@ CREATE TABLE `employee_identities` (
   `ktp_document_path`       VARCHAR(255) NULL DEFAULT NULL,
   `npwp_document_path`      VARCHAR(255) NULL DEFAULT NULL,
   -- Audit
-  `created_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`              CHAR(36) NULL DEFAULT NULL,
+  `updated_by`              CHAR(36) NULL DEFAULT NULL,
   `created_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -149,16 +149,16 @@ CREATE TABLE `employee_identities` (
 -- 5. EMPLOYEE BANK ACCOUNTS
 -- ============================================================
 CREATE TABLE `employee_bank_accounts` (
-  `id`                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`         BIGINT UNSIGNED NOT NULL,
+  `id`                  CHAR(36) NOT NULL,
+  `employee_id`         CHAR(36) NOT NULL,
   `bank_name`           VARCHAR(100) NOT NULL,
   `bank_branch`         VARCHAR(100) NULL DEFAULT NULL,
   `account_number`      VARCHAR(30) NOT NULL,
   `account_holder_name` VARCHAR(150) NOT NULL,
   `is_primary`          TINYINT(1) NOT NULL DEFAULT 1,
   -- Audit
-  `created_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`          CHAR(36) NULL DEFAULT NULL,
+  `updated_by`          CHAR(36) NULL DEFAULT NULL,
   `created_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -172,16 +172,16 @@ CREATE TABLE `employee_bank_accounts` (
 -- 6. EMERGENCY CONTACTS
 -- ============================================================
 CREATE TABLE `emergency_contacts` (
-  `id`              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`     BIGINT UNSIGNED NOT NULL,
+  `id`              CHAR(36) NOT NULL,
+  `employee_id`     CHAR(36) NOT NULL,
   `contact_name`    VARCHAR(150) NOT NULL,
   `relationship`    VARCHAR(50) NOT NULL,
   `phone_number`    VARCHAR(20) NOT NULL,
   `is_primary`      TINYINT(1) NOT NULL DEFAULT 0,
   `notes`           VARCHAR(255) NULL DEFAULT NULL,
   -- Audit
-  `created_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`      CHAR(36) NULL DEFAULT NULL,
+  `updated_by`      CHAR(36) NULL DEFAULT NULL,
   `created_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -195,8 +195,8 @@ CREATE TABLE `emergency_contacts` (
 -- 7. SALARY STRUCTURES
 -- ============================================================
 CREATE TABLE `salary_structures` (
-  `id`                      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`             BIGINT UNSIGNED NOT NULL,
+  `id`                      CHAR(36) NOT NULL,
+  `employee_id`             CHAR(36) NOT NULL,
   `effective_date`          DATE NOT NULL,
   `basic_salary`            BIGINT NOT NULL DEFAULT 0,
   `allowance_position`      BIGINT NOT NULL DEFAULT 0 COMMENT 'Tunjangan Jabatan',
@@ -207,8 +207,8 @@ CREATE TABLE `salary_structures` (
   `notes`                   TEXT NULL DEFAULT NULL,
   `is_current`              TINYINT(1) NOT NULL DEFAULT 1,
   -- Audit
-  `created_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`              BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`              CHAR(36) NULL DEFAULT NULL,
+  `updated_by`              CHAR(36) NULL DEFAULT NULL,
   `created_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -222,8 +222,8 @@ CREATE TABLE `salary_structures` (
 -- 8. PAYROLL SLIPS (Monthly)
 -- ============================================================
 CREATE TABLE `payrolls` (
-  `id`                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`         BIGINT UNSIGNED NOT NULL,
+  `id`                  CHAR(36) NOT NULL,
+  `employee_id`         CHAR(36) NOT NULL,
   `period_year`         SMALLINT UNSIGNED NOT NULL,
   `period_month`        TINYINT UNSIGNED NOT NULL COMMENT '1-12',
   `basic_salary`        BIGINT NOT NULL DEFAULT 0,
@@ -242,8 +242,8 @@ CREATE TABLE `payrolls` (
   `status`              ENUM('draft','processed','paid') NOT NULL DEFAULT 'draft',
   `notes`               TEXT NULL DEFAULT NULL,
   -- Audit
-  `created_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`          CHAR(36) NULL DEFAULT NULL,
+  `updated_by`          CHAR(36) NULL DEFAULT NULL,
   `created_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -258,8 +258,8 @@ CREATE TABLE `payrolls` (
 -- 9. CONTRACTS (PKWT / PKWTT / Internship)
 -- ============================================================
 CREATE TABLE `contracts` (
-  `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`       BIGINT UNSIGNED NOT NULL,
+  `id`                CHAR(36) NOT NULL,
+  `employee_id`       CHAR(36) NOT NULL,
   `contract_type`     ENUM('PKWT','PKWTT','Internship','Probation') NOT NULL,
   `start_date`        DATE NOT NULL,
   `end_date`          DATE NULL DEFAULT NULL COMMENT 'NULL = permanent',
@@ -267,8 +267,8 @@ CREATE TABLE `contracts` (
   `document_path`     VARCHAR(255) NULL DEFAULT NULL,
   `notes`             TEXT NULL DEFAULT NULL,
   -- Audit
-  `created_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`        CHAR(36) NULL DEFAULT NULL,
+  `updated_by`        CHAR(36) NULL DEFAULT NULL,
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -282,8 +282,8 @@ CREATE TABLE `contracts` (
 -- 10. ATTENDANCE
 -- ============================================================
 CREATE TABLE `attendances` (
-  `id`              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`     BIGINT UNSIGNED NOT NULL,
+  `id`              CHAR(36) NOT NULL,
+  `employee_id`     CHAR(36) NOT NULL,
   `attendance_date` DATE NOT NULL,
   `clock_in`        TIME NULL DEFAULT NULL,
   `clock_out`       TIME NULL DEFAULT NULL,
@@ -293,8 +293,8 @@ CREATE TABLE `attendances` (
   `ip_address`      VARCHAR(45) NULL DEFAULT NULL,
   `notes`           VARCHAR(255) NULL DEFAULT NULL,
   -- Audit
-  `created_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`      CHAR(36) NULL DEFAULT NULL,
+  `updated_by`      CHAR(36) NULL DEFAULT NULL,
   `created_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -309,8 +309,8 @@ CREATE TABLE `attendances` (
 -- 11. LEAVE BALANCES
 -- ============================================================
 CREATE TABLE `leave_balances` (
-  `id`                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`         BIGINT UNSIGNED NOT NULL,
+  `id`                  CHAR(36) NOT NULL,
+  `employee_id`         CHAR(36) NOT NULL,
   `year`                SMALLINT UNSIGNED NOT NULL,
   `annual_leave_quota`  TINYINT UNSIGNED NOT NULL DEFAULT 12,
   `annual_leave_used`   TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -319,8 +319,8 @@ CREATE TABLE `leave_balances` (
   `unpaid_leave_quota`  TINYINT UNSIGNED NOT NULL DEFAULT 5,
   `unpaid_leave_used`   TINYINT UNSIGNED NOT NULL DEFAULT 0,
   -- Audit
-  `created_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`          BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`          CHAR(36) NULL DEFAULT NULL,
+  `updated_by`          CHAR(36) NULL DEFAULT NULL,
   `created_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -334,8 +334,8 @@ CREATE TABLE `leave_balances` (
 -- 12. LEAVE REQUESTS
 -- ============================================================
 CREATE TABLE `leaves` (
-  `id`              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`     BIGINT UNSIGNED NOT NULL,
+  `id`              CHAR(36) NOT NULL,
+  `employee_id`     CHAR(36) NOT NULL,
   `leave_type`      ENUM('annual','sick','unpaid','maternity','paternity','special') NOT NULL DEFAULT 'annual',
   `start_date`      DATE NOT NULL,
   `end_date`        DATE NOT NULL,
@@ -343,12 +343,12 @@ CREATE TABLE `leaves` (
   `reason`          TEXT NOT NULL,
   `attachment`      VARCHAR(255) NULL DEFAULT NULL,
   `status`          ENUM('pending','approved','rejected','cancelled') NOT NULL DEFAULT 'pending',
-  `approved_by`     BIGINT UNSIGNED NULL DEFAULT NULL,
+  `approved_by`     CHAR(36) NULL DEFAULT NULL,
   `approved_at`     TIMESTAMP NULL DEFAULT NULL,
   `rejection_note`  TEXT NULL DEFAULT NULL,
   -- Audit
-  `created_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`      BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`      CHAR(36) NULL DEFAULT NULL,
+  `updated_by`      CHAR(36) NULL DEFAULT NULL,
   `created_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -364,8 +364,8 @@ CREATE TABLE `leaves` (
 -- 13. OVERTIME
 -- ============================================================
 CREATE TABLE `overtimes` (
-  `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`       BIGINT UNSIGNED NOT NULL,
+  `id`                CHAR(36) NOT NULL,
+  `employee_id`       CHAR(36) NOT NULL,
   `overtime_date`     DATE NOT NULL,
   `start_time`        TIME NOT NULL,
   `end_time`          TIME NOT NULL,
@@ -373,11 +373,11 @@ CREATE TABLE `overtimes` (
   `description`       VARCHAR(255) NULL DEFAULT NULL,
   `overtime_pay`      BIGINT NOT NULL DEFAULT 0,
   `status`            ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  `approved_by`       BIGINT UNSIGNED NULL DEFAULT NULL,
+  `approved_by`       CHAR(36) NULL DEFAULT NULL,
   `approved_at`       TIMESTAMP NULL DEFAULT NULL,
   -- Audit
-  `created_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`        CHAR(36) NULL DEFAULT NULL,
+  `updated_by`        CHAR(36) NULL DEFAULT NULL,
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -392,20 +392,20 @@ CREATE TABLE `overtimes` (
 -- 14. REIMBURSEMENT
 -- ============================================================
 CREATE TABLE `reimburses` (
-  `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`       BIGINT UNSIGNED NOT NULL,
+  `id`                CHAR(36) NOT NULL,
+  `employee_id`       CHAR(36) NOT NULL,
   `reimburse_date`    DATE NOT NULL,
   `category`          VARCHAR(100) NOT NULL,
   `description`       TEXT NOT NULL,
   `amount`            BIGINT NOT NULL,
   `receipt_path`      VARCHAR(255) NULL DEFAULT NULL,
   `status`            ENUM('pending','approved','rejected','paid') NOT NULL DEFAULT 'pending',
-  `approved_by`       BIGINT UNSIGNED NULL DEFAULT NULL,
+  `approved_by`       CHAR(36) NULL DEFAULT NULL,
   `approved_at`       TIMESTAMP NULL DEFAULT NULL,
   `notes`             TEXT NULL DEFAULT NULL,
   -- Audit
-  `created_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`        BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`        CHAR(36) NULL DEFAULT NULL,
+  `updated_by`        CHAR(36) NULL DEFAULT NULL,
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -420,9 +420,9 @@ CREATE TABLE `reimburses` (
 -- 15. PERFORMANCE REVIEWS
 -- ============================================================
 CREATE TABLE `performances` (
-  `id`                    BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`           BIGINT UNSIGNED NOT NULL,
-  `reviewer_id`           BIGINT UNSIGNED NULL DEFAULT NULL,
+  `id`                    CHAR(36) NOT NULL,
+  `employee_id`           CHAR(36) NOT NULL,
+  `reviewer_id`           CHAR(36) NULL DEFAULT NULL,
   `review_period_start`   DATE NOT NULL,
   `review_period_end`     DATE NOT NULL,
   `kpi_score`             DECIMAL(5,2) NULL DEFAULT NULL,
@@ -435,8 +435,8 @@ CREATE TABLE `performances` (
   `notes`                 TEXT NULL DEFAULT NULL,
   `status`                ENUM('draft','submitted','acknowledged') NOT NULL DEFAULT 'draft',
   -- Audit
-  `created_by`            BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`            BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`            CHAR(36) NULL DEFAULT NULL,
+  `updated_by`            CHAR(36) NULL DEFAULT NULL,
   `created_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -483,7 +483,7 @@ CREATE TABLE `performances` (
 --  Catatan Tambahan          → notes
 -- ============================================================
 CREATE TABLE `client_locations` (
-  `id`                       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`                       CHAR(36) NOT NULL,
 
   -- Identitas Klien
   `client_name`              VARCHAR(150) NOT NULL COMMENT 'Nama perusahaan / klien',
@@ -518,8 +518,8 @@ CREATE TABLE `client_locations` (
   `notes`                    TEXT NULL DEFAULT NULL COMMENT 'Dress code, akses parkir, prosedur khusus',
 
   -- Audit
-  `created_by`               BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`               BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`               CHAR(36) NULL DEFAULT NULL,
+  `updated_by`               CHAR(36) NULL DEFAULT NULL,
   `created_at`               TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`               TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -533,9 +533,9 @@ CREATE TABLE `client_locations` (
 -- 17. PLACEMENTS / ASSIGNMENTS
 -- ============================================================
 CREATE TABLE `placements` (
-  `id`                    BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`           BIGINT UNSIGNED NOT NULL,
-  `client_location_id`    BIGINT UNSIGNED NOT NULL,
+  `id`                    CHAR(36) NOT NULL,
+  `employee_id`           CHAR(36) NOT NULL,
+  `client_location_id`    CHAR(36) NOT NULL,
   `sk_number`             VARCHAR(50) NULL DEFAULT NULL COMMENT 'Surat Keputusan No.',
   `position_at_client`    VARCHAR(100) NOT NULL,
   `start_date`            DATE NOT NULL,
@@ -544,8 +544,8 @@ CREATE TABLE `placements` (
   `status`                ENUM('active','pending','completed','cancelled') NOT NULL DEFAULT 'pending',
   `notes`                 TEXT NULL DEFAULT NULL,
   -- Audit
-  `created_by`            BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`            BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`            CHAR(36) NULL DEFAULT NULL,
+  `updated_by`            CHAR(36) NULL DEFAULT NULL,
   `created_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -561,15 +561,15 @@ CREATE TABLE `placements` (
 -- 18. EMPLOYEE PROFILES (Bio / extended info)
 -- ============================================================
 CREATE TABLE `profiles` (
-  `id`            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_id`   BIGINT UNSIGNED NOT NULL,
+  `id`            CHAR(36) NOT NULL,
+  `employee_id`   CHAR(36) NOT NULL,
   `bio`           TEXT NULL DEFAULT NULL,
   `linkedin_url`  VARCHAR(255) NULL DEFAULT NULL,
   `skills`        TEXT NULL DEFAULT NULL,
   `languages`     VARCHAR(255) NULL DEFAULT NULL,
   -- Audit
-  `created_by`    BIGINT UNSIGNED NULL DEFAULT NULL,
-  `updated_by`    BIGINT UNSIGNED NULL DEFAULT NULL,
+  `created_by`    CHAR(36) NULL DEFAULT NULL,
+  `updated_by`    CHAR(36) NULL DEFAULT NULL,
   `created_at`    TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`    TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -583,11 +583,11 @@ CREATE TABLE `profiles` (
 -- 19. ACTIVITY LOG / AUDIT TRAIL
 -- ============================================================
 CREATE TABLE `activity_logs` (
-  `id`            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id`       BIGINT UNSIGNED NULL DEFAULT NULL,
+  `id`            CHAR(36) NOT NULL,
+  `user_id`       CHAR(36) NULL DEFAULT NULL,
   `action`        VARCHAR(100) NOT NULL COMMENT 'e.g. employee.update, leave.approve',
   `model_type`    VARCHAR(100) NULL DEFAULT NULL,
-  `model_id`      BIGINT UNSIGNED NULL DEFAULT NULL,
+  `model_id`      CHAR(36) NULL DEFAULT NULL,
   `description`   TEXT NULL DEFAULT NULL,
   `ip_address`    VARCHAR(45) NULL DEFAULT NULL,
   `user_agent`    VARCHAR(255) NULL DEFAULT NULL,
