@@ -12,23 +12,6 @@ SET NAMES utf8mb4;
 -- ============================================================
 -- 1. USERS (Auth & System Access)
 -- ============================================================
-CREATE TABLE `users` (
-  `id`                CHAR(36) NOT NULL,
-  `name`              VARCHAR(100) NOT NULL,
-  `email`             VARCHAR(150) NOT NULL,
-  `email_verified_at` TIMESTAMP NULL DEFAULT NULL,
-  `password`          VARCHAR(255) NOT NULL,
-  `role`              ENUM('superadmin','admin','hr','manager','employee') NOT NULL DEFAULT 'employee',
-  `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
-  `remember_token`    VARCHAR(100) NULL DEFAULT NULL,
-  -- Audit
-  `created_by`        CHAR(36) NULL DEFAULT NULL,
-  `updated_by`        CHAR(36) NULL DEFAULT NULL,
-  `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
 -- 2. DIVISIONS / DEPARTMENTS
@@ -52,10 +35,7 @@ CREATE TABLE `divisions` (
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `divisions_code_unique` (`division_code`),
-  KEY `divisions_parent_id_fk` (`parent_id`),
-  CONSTRAINT `divisions_parent_id_fk` FOREIGN KEY (`parent_id`) REFERENCES `divisions` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `divisions_created_by_fk` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `divisions_updated_by_fk` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `divisions_parent_id_fk` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -104,18 +84,8 @@ CREATE TABLE `employees` (
   UNIQUE KEY `employees_number_unique` (`employee_number`),
   KEY `employees_user_id_fk` (`user_id`),
   KEY `employees_division_id_fk` (`division_id`),
-  KEY `employees_manager_id_fk` (`manager_id`),
-  CONSTRAINT `employees_user_id_fk`      FOREIGN KEY (`user_id`)    REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employees_division_id_fk`  FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employees_manager_id_fk`   FOREIGN KEY (`manager_id`) REFERENCES `employees` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employees_created_by_fk`   FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employees_updated_by_fk`   FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `employees_manager_id_fk` (`manager_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Back-reference FK for division head
-ALTER TABLE `divisions`
-  ADD CONSTRAINT `divisions_head_employee_id_fk`
-  FOREIGN KEY (`head_employee_id`) REFERENCES `employees` (`id`) ON DELETE SET NULL;
 
 -- ============================================================
 -- 4. EMPLOYEE OFFICIAL IDs
@@ -139,10 +109,7 @@ CREATE TABLE `employee_identities` (
   `created_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `employee_identities_employee_unique` (`employee_id`),
-  CONSTRAINT `employee_identities_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `employee_identities_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employee_identities_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  UNIQUE KEY `employee_identities_employee_unique` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -162,10 +129,7 @@ CREATE TABLE `employee_bank_accounts` (
   `created_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `employee_bank_employee_fk` (`employee_id`),
-  CONSTRAINT `employee_bank_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `employee_bank_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `employee_bank_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `employee_bank_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -185,10 +149,7 @@ CREATE TABLE `emergency_contacts` (
   `created_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `emergency_contacts_employee_fk` (`employee_id`),
-  CONSTRAINT `emergency_contacts_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `emergency_contacts_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `emergency_contacts_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `emergency_contacts_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -212,10 +173,7 @@ CREATE TABLE `salary_structures` (
   `created_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`              TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `salary_structures_employee_fk` (`employee_id`),
-  CONSTRAINT `salary_structures_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `salary_structures_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `salary_structures_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `salary_structures_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -248,10 +206,7 @@ CREATE TABLE `payrolls` (
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payrolls_employee_period_unique` (`employee_id`, `period_year`, `period_month`),
-  KEY `payrolls_employee_fk` (`employee_id`),
-  CONSTRAINT `payrolls_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `payrolls_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `payrolls_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `payrolls_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -272,10 +227,7 @@ CREATE TABLE `contracts` (
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `contracts_employee_fk` (`employee_id`),
-  CONSTRAINT `contracts_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `contracts_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `contracts_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `contracts_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -299,10 +251,7 @@ CREATE TABLE `attendances` (
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `attendances_employee_date_unique` (`employee_id`, `attendance_date`),
-  KEY `attendances_employee_fk` (`employee_id`),
-  CONSTRAINT `attendances_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `attendances_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `attendances_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `attendances_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -324,10 +273,7 @@ CREATE TABLE `leave_balances` (
   `created_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `leave_balances_employee_year_unique` (`employee_id`, `year`),
-  CONSTRAINT `leave_balances_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `leave_balances_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `leave_balances_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  UNIQUE KEY `leave_balances_employee_year_unique` (`employee_id`, `year`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -353,11 +299,7 @@ CREATE TABLE `leaves` (
   `updated_at`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `leaves_employee_fk` (`employee_id`),
-  KEY `leaves_approved_by_fk` (`approved_by`),
-  CONSTRAINT `leaves_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `leaves_approved_by_fk` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `leaves_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `leaves_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `leaves_approved_by_fk` (`approved_by`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -381,11 +323,7 @@ CREATE TABLE `overtimes` (
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `overtimes_employee_fk` (`employee_id`),
-  CONSTRAINT `overtimes_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `overtimes_approved_by_fk` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `overtimes_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `overtimes_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `overtimes_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -409,11 +347,7 @@ CREATE TABLE `reimburses` (
   `created_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `reimburses_employee_fk` (`employee_id`),
-  CONSTRAINT `reimburses_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `reimburses_approved_by_fk` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `reimburses_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `reimburses_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `reimburses_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -440,11 +374,7 @@ CREATE TABLE `performances` (
   `created_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `performances_employee_fk` (`employee_id`),
-  CONSTRAINT `performances_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `performances_reviewer_fk`    FOREIGN KEY (`reviewer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `performances_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `performances_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `performances_employee_fk` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -524,9 +454,7 @@ CREATE TABLE `client_locations` (
   `updated_at`               TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `client_locations_code_unique` (`client_code`),
-  CONSTRAINT `client_locations_created_by_fk` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `client_locations_updated_by_fk` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  UNIQUE KEY `client_locations_code_unique` (`client_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -550,11 +478,7 @@ CREATE TABLE `placements` (
   `updated_at`            TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `placements_employee_fk` (`employee_id`),
-  KEY `placements_client_location_fk` (`client_location_id`),
-  CONSTRAINT `placements_employee_fk`        FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `placements_client_location_fk` FOREIGN KEY (`client_location_id`) REFERENCES `client_locations` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `placements_created_by_fk`      FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `placements_updated_by_fk`      FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `placements_client_location_fk` (`client_location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -573,10 +497,7 @@ CREATE TABLE `profiles` (
   `created_at`    TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`    TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `profiles_employee_unique` (`employee_id`),
-  CONSTRAINT `profiles_employee_fk`    FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `profiles_created_by_fk`  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `profiles_updated_by_fk`  FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  UNIQUE KEY `profiles_employee_unique` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -593,8 +514,7 @@ CREATE TABLE `activity_logs` (
   `user_agent`    VARCHAR(255) NULL DEFAULT NULL,
   `created_at`    TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `activity_logs_user_fk` (`user_id`),
-  CONSTRAINT `activity_logs_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+  KEY `activity_logs_user_fk` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -607,74 +527,74 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_by`, `updated_by`) VALUES
-(1, 'Admin HRistopher', 'admin@hrmanagement.com', '$2y$12$placeholder', 'admin', 1, 1),
-(2, 'Sarah Williams',   'sarah.williams@company.com', '$2y$12$placeholder', 'employee', 1, 1),
-(3, 'Michael Chen',     'michael.chen@company.com',   '$2y$12$placeholder', 'manager', 1, 1);
+('45048f8c-531d-48ca-822c-54003cca6544', 'Admin HRistopher', 'admin@hrmanagement.com', '$2y$12$placeholder', 'admin', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('6dfbc3a2-95c0-407c-b7eb-24e9a6624bd1', 'Sarah Williams',   'sarah.williams@company.com', '$2y$12$placeholder', 'employee', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('61527aa2-f4d9-4c09-8d50-f2a6696ea6ec', 'Michael Chen',     'michael.chen@company.com',   '$2y$12$placeholder', 'manager', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
 INSERT INTO `divisions` (`id`, `division_code`, `name`, `description`, `is_active`, `created_by`, `updated_by`) VALUES
-(1, 'ENG',  'Engineering & Tech',    'Software development and technical infrastructure', 1, 1, 1),
-(2, 'MRK',  'Marketing',             'Brand, content, and growth marketing', 1, 1, 1),
-(3, 'FIN',  'Finance & Accounting',  'Financial management and reporting', 1, 1, 1),
-(4, 'HR',   'Human Resources',       'People operations and talent management', 1, 1, 1),
-(5, 'SLS',  'Sales',                 'B2B and B2C sales operations', 1, 1, 1),
-(6, 'OPS',  'Operations',            'General operations and logistics', 1, 1, 1),
-(7, 'LGL',  'Legal & Compliance',    'Legal counsel and regulatory compliance', 1, 1, 1),
-(8, 'SPT',  'Customer Support',      'Customer success and support', 1, 1, 1);
+('a4a32fd8-a840-4bb8-b9d9-6ea6c70e1070', 'ENG',  'Engineering & Tech',    'Software development and technical infrastructure', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('b2b3c4d5-e6f7-8901-2345-6789abcdef', 'MRK',  'Marketing',             'Brand, content, and growth marketing', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('c3d4e5f6-7890-1234-5678-90abcdef12', 'FIN',  'Finance & Accounting',  'Financial management and reporting', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('d4e5f6a7-8901-2345-6789-0abcdef123', 'HR',   'Human Resources',       'People operations and talent management', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('e5f6a7b8-9012-3456-7890-abcdef1234', 'SLS',  'Sales',                 'B2B and B2C sales operations', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('f6a7b8c9-0123-4567-8901-bcdef12345', 'OPS',  'Operations',            'General operations and logistics', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('d5eb519c-8d07-4a7a-a482-42c290be35f4', 'LGL',  'Legal & Compliance',    'Legal counsel and regulatory compliance', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('e6f7a8b9-0123-4567-8901-cdef123456', 'SPT',  'Customer Support',      'Customer success and support', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
 INSERT INTO `employees` (`id`, `user_id`, `employee_number`, `full_name`, `job_title`, `division_id`, `employment_status`, `join_date`, `gender`, `phone_number`, `nationality`, `created_by`, `updated_by`) VALUES
-(1, 2, 'EMP-1025', 'Sarah Williams',   'Senior Frontend Developer', 1, 'active',     '2020-01-15', 'female', '081201234567', 'Indonesian', 1, 1),
-(2, 3, 'EMP-0842', 'Michael Chen',     'Marketing Director',        2, 'active',     '2019-03-01', 'male',   '081299887766', 'Indonesian', 1, 1),
-(3, NULL, 'EMP-0512', 'Budi Santoso',  'Sales Manager',             5, 'active',     '2019-03-01', 'male',   '082145678901', 'Indonesian', 1, 1),
-(4, NULL, 'EMP-0398', 'Lisa Keuangan', 'Finance Lead',              3, 'active',     '2018-02-20', 'female', '085156789012', 'Indonesian', 1, 1),
-(5, NULL, 'EMP-0756', 'Ahmad Fauzi',   'Backend Developer',         1, 'active',     '2022-09-15', 'male',   '081312345678', 'Indonesian', 1, 1),
-(6, NULL, 'EMP-0890', 'Rina Wati',     'UI/UX Designer',            1, 'contract',   '2025-07-01', 'female', '087823456789', 'Indonesian', 1, 1),
-(7, NULL, 'EMP-0245', 'Dewi Legalitas','Legal Counsel',             7, 'active',     '2017-08-10', 'female', '081934567890', 'Indonesian', 1, 1),
-(8, NULL, 'EMP-0901', 'Siti Layanan',  'Customer Success Lead',     8, 'active',     '2021-06-05', 'female', '089045678901', 'Indonesian', 1, 1),
-(9, NULL, 'EMP-0634', 'Hendra Gunawan','Project Manager',           1, 'contract',   '2025-11-01', 'male',   '082156789012', 'Indonesian', 1, 1),
-(10,NULL, 'EMP-0950', 'Putri Ayu',     'Data Analyst',              1, 'internship', '2026-02-15', 'female', '083267890123', 'Indonesian', 1, 1);
+('b13cffb1-a1c5-427a-a2c2-3c73edc03da5', '6dfbc3a2-95c0-407c-b7eb-24e9a6624bd1', 'EMP-1025', 'Sarah Williams',   'Senior Frontend Developer', 'a4a32fd8-a840-4bb8-b9d9-6ea6c70e1070', 'active',     '2020-01-15', 'female', '081201234567', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('d6d8d8dd-dcf8-45d8-8371-338ff31e9166', '61527aa2-f4d9-4c09-8d50-f2a6696ea6ec', 'EMP-0842', 'Michael Chen',     'Marketing Director',        'b2b3c4d5-e6f7-8901-2345-6789abcdef', 'active',     '2019-03-01', 'male',   '081299887766', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('f362cc1a-15a8-4f95-b5a8-3588eba8d801', NULL, 'EMP-0512', 'Budi Santoso',  'Sales Manager',             5, 'active',     '2019-03-01', 'male',   '082145678901', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('8c4b25ea-e166-4490-88a8-25f0dfd1a2fe', NULL, 'EMP-0398', 'Lisa Keuangan', 'Finance Lead',              3, 'active',     '2018-02-20', 'female', '085156789012', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('6be2768b-ee39-410f-88a9-5b4286ef7319', NULL, 'EMP-0756', 'Ahmad Fauzi',   'Backend Developer',         1, 'active',     '2022-09-15', 'male',   '081312345678', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('b1a9a99d-a0a7-4a4d-b856-0e0903e16c17', NULL, 'EMP-0890', 'Rina Wati',     'UI/UX Designer',            1, 'contract',   '2025-07-01', 'female', '087823456789', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('0b25e43e-9fde-4609-87d1-b7f12a315022', NULL, 'EMP-0245', 'Dewi Legalitas','Legal Counsel',             7, 'active',     '2017-08-10', 'female', '081934567890', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('ebbe09d2-06bf-43ea-809a-15e6abd68f10', NULL, 'EMP-0901', 'Siti Layanan',  'Customer Success Lead',     8, 'active',     '2021-06-05', 'female', '089045678901', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('e30c7e7a-44a4-4e2a-aafb-b4052e02ba49', NULL, 'EMP-0634', 'Hendra Gunawan','Project Manager',           1, 'contract',   '2025-11-01', 'male',   '082156789012', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('a629ae82-9912-4576-b1f9-0b4492f757fb',NULL, 'EMP-0950', 'Putri Ayu',     'Data Analyst',              1, 'internship', '2026-02-15', 'female', '083267890123', 'Indonesian', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
-INSERT INTO `contracts` (`employee_id`, `contract_type`, `start_date`, `end_date`, `status`, `created_by`, `updated_by`) VALUES
-(1, 'PKWTT',      '2020-01-15', NULL,         'active', 1, 1),
-(2, 'PKWTT',      '2019-03-01', NULL,         'active', 1, 1),
-(3, 'PKWTT',      '2019-03-01', NULL,         'active', 1, 1),
-(4, 'PKWTT',      '2018-02-20', NULL,         'active', 1, 1),
-(5, 'PKWT',       '2025-09-15', '2026-09-14', 'active', 1, 1),
-(6, 'PKWT',       '2025-07-01', '2027-06-30', 'active', 1, 1),
-(9, 'PKWT',       '2025-11-01', '2026-10-31', 'active', 1, 1),
-(10,'Internship', '2026-02-15', '2026-08-14', 'active', 1, 1);
+INSERT INTO `contracts` (`id`,`employee_id`, `contract_type`, `start_date`, `end_date`, `status`, `created_by`, `updated_by`) VALUES
+('1e718936-aa43-40a2-a2fc-6c54d04747de', 'b13cffb1-a1c5-427a-a2c2-3c73edc03da5', 'PKWTT',      '2020-01-15', NULL,         'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('a2c31068-c668-4964-b940-289626d30cef', '6dfbc3a2-95c0-407c-b7eb-24e9a6624bd1', 'PKWTT',      '2019-03-01', NULL,         'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('777e3c9d-8f8d-403d-bb9e-451e68ed9fd8', '61527aa2-f4d9-4c09-8d50-f2a6696ea6ec', 'PKWTT',      '2019-03-01', NULL,         'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('1f750948-6670-4303-8f5a-9af1b2d27ad4', 'f362cc1a-15a8-4f95-b5a8-3588eba8d801', 'PKWTT',      '2018-02-20', NULL,         'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('79639912-4843-43fe-85c8-1c7d7e3d5c67', '6be2768b-ee39-410f-88a9-5b4286ef7319', 'PKWT',       '2025-09-15', '2026-09-14', 'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('2943d527-9338-452a-b0c5-92d40d7f5305', 'b1a9a99d-a0a7-4a4d-b856-0e0903e16c17', 'PKWT',       '2025-07-01', '2027-06-30', 'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('31c42230-0e4c-4fa2-a595-54f40cf593c6', 'e30c7e7a-44a4-4e2a-aafb-b4052e02ba49', 'PKWT',       '2025-11-01', '2026-10-31', 'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+('b71c81ad-8e15-4fb1-b8a1-f6ccb3e8c78e', 'a629ae82-9912-4576-b1f9-0b4492f757fb', 'Internship', '2026-02-15', '2026-08-14', 'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
-INSERT INTO `leave_balances` (`employee_id`, `year`, `annual_leave_quota`, `annual_leave_used`, `sick_leave_quota`, `sick_leave_used`, `unpaid_leave_quota`, `unpaid_leave_used`, `created_by`, `updated_by`) VALUES
-(1, 2026, 12, 4, 14, 0, 5, 0, 1, 1),
-(2, 2026, 12, 2, 14, 0, 5, 0, 1, 1),
-(3, 2026, 12, 0, 14, 0, 5, 0, 1, 1);
+INSERT INTO `leave_balances` (`id`, `employee_id`, `year`, `annual_leave_quota`, `annual_leave_used`, `sick_leave_quota`, `sick_leave_used`, `unpaid_leave_quota`, `unpaid_leave_used`, `created_by`, `updated_by`) VALUES
+(UUID(), 'b13cffb1-a1c5-427a-a2c2-3c73edc03da5', 2026, 12, 4, 14, 0, 5, 0, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+(UUID(), '6dfbc3a2-95c0-407c-b7eb-24e9a6624bd1', 2026, 12, 2, 14, 0, 5, 0, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+(UUID(), '61527aa2-f4d9-4c09-8d50-f2a6696ea6ec', 2026, 12, 0, 14, 0, 5, 0, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
 -- ★ Client Locations termasuk koordinat GPS dari peta
 INSERT INTO `client_locations`
   (`id`, `client_name`, `client_code`, `industry`, `pic_name`, `building_name`, `address`, `city`, `province`,
    `latitude`, `longitude`, `attendance_radius_meter`, `work_start_time`, `work_end_time`, `work_days`, `is_active`, `created_by`, `updated_by`)
 VALUES
-(1, 'CNBC Indonesia',   'CNBC-01', 'Media & Broadcasting',  'Andi Wijaya', 'Gedung Trans Media',
+('eaaf1077-fdb2-4dd3-ba5f-639e49f9866a', 'CNBC Indonesia',   'CNBC-01', 'Media & Broadcasting',  'Andi Wijaya', 'Gedung Trans Media',
    'Jl. Kebon Sirih No. 17-19, Gambir', 'Jakarta Pusat', 'DKI Jakarta',
-   -6.186486, 106.830010, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, 1, 1),
+   -6.186486, 106.830010, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
 
-(2, 'Bank Mandiri',     'MNDRI-01', 'Perbankan & Keuangan', 'Reni Kusuma', 'Plaza Mandiri',
+('7fe2ebfc-1d90-4e07-9603-572e4bd8becd', 'Bank Mandiri',     'MNDRI-01', 'Perbankan & Keuangan', 'Reni Kusuma', 'Plaza Mandiri',
    'Jl. Jend. Gatot Subroto Kav. 36-38', 'Jakarta Selatan', 'DKI Jakarta',
-   -6.229770, 106.821520, 150, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, 1, 1),
+   -6.229770, 106.821520, 150, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
 
-(3, 'BRI',              'BRI-01',   'Perbankan & Keuangan', 'Hasan Nawawi', 'Gedung BRI 1',
+('e53e61c7-2f09-4ee6-b85e-5a3e7fead8bc', 'BRI',              'BRI-01',   'Perbankan & Keuangan', 'Hasan Nawawi', 'Gedung BRI 1',
    'Jl. Jend. Sudirman Kav. 44-46',    'Jakarta Pusat', 'DKI Jakarta',
-   -6.208760, 106.818680, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, 1, 1),
+   -6.208760, 106.818680, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
 
-(4, 'Kompas Gramedia', 'KG-01',    'Media & Penerbitan',   'Sari Dewi',   'Gedung Kompas Gramedia',
+('45048f8c-531d-48ca-822c-54003cca6544', 'Kompas Gramedia', 'KG-01',    'Media & Penerbitan',   'Sari Dewi',   'Gedung Kompas Gramedia',
    'Jl. Palmerah Selatan No. 22-28',   'Jakarta Barat', 'DKI Jakarta',
-   -6.205360, 106.793210, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, 1, 1),
+   -6.205360, 106.793210, 100, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
 
-(5, 'Telkom Indonesia', 'TLKM-01', 'Telekomunikasi',       'Bima Sakti',  'Gedung Telkom',
+('3a0983b5-f2b9-4b4d-b719-a49e7be1f4e5', 'Telkom Indonesia', 'TLKM-01', 'Telekomunikasi',       'Bima Sakti',  'Gedung Telkom',
    'Jl. Gatot Subroto No. 52',         'Jakarta Selatan', 'DKI Jakarta',
-   -6.235410, 106.827190, 200, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, 1, 1);
+   -6.235410, 106.827190, 200, '08:00', '17:00', 'Mon,Tue,Wed,Thu,Fri', 1, '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
 
 INSERT INTO `placements`
-  (`employee_id`, `client_location_id`, `sk_number`, `position_at_client`, `start_date`, `end_date`, `placement_type`, `status`, `created_by`, `updated_by`)
+  (`id`, `employee_id`, `client_location_id`, `sk_number`, `position_at_client`, `start_date`, `end_date`, `placement_type`, `status`, `created_by`, `updated_by`)
 VALUES
-(1, 1, 'SK/HR/04-2026/012', 'Video Editor',       '2026-04-01', '2027-03-31', 'new_placement', 'active', 1, 1),
-(3, 2, 'SK/HR/03-2026/008', 'IT Support Analyst', '2026-03-15', '2027-03-14', 'mutation',       'active', 1, 1);
+(UUID(), 'b13cffb1-a1c5-427a-a2c2-3c73edc03da5', 'eaaf1077-fdb2-4dd3-ba5f-639e49f9866a', 'SK/HR/04-2026/012', 'Video Editor',       '2026-04-01', '2027-03-31', 'new_placement', 'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544'),
+(UUID(), '6dfbc3a2-95c0-407c-b7eb-24e9a6624bd1', '7fe2ebfc-1d90-4e07-9603-572e4bd8becd', 'SK/HR/03-2026/008', 'IT Support Analyst', '2026-03-15', '2027-03-14', 'mutation',       'active', '45048f8c-531d-48ca-822c-54003cca6544', '45048f8c-531d-48ca-822c-54003cca6544');
