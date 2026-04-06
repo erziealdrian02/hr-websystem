@@ -307,6 +307,8 @@
             -webkit-appearance: none;
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body class="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
@@ -322,6 +324,8 @@
             </main>
         </div>
     </div>
+
+    @stack('scripts')
 </body>
 
 </html>
