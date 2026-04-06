@@ -135,9 +135,10 @@
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5 required">Employee ID</label>
                             <input type="text"
+                                readonly
                                 name="employee_number"
                                 placeholder="e.g. EMP-1026"
-                                value="{{ old('employee_number') }}"
+                                value="{{ old('employee_number', $employeeNumber) }}"
                                 class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 transition @error('employee_number') border-red-400 @enderror">
                             @error('employee_number')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -255,17 +256,6 @@
                                 value="{{ old('work_email') }}"
                                 class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 transition">
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Work Location / Office</label>
-                            <select name="work_location"
-                                class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 transition">
-                                <option value="">Select office...</option>
-                                <option value="head_office" {{ old('work_location') == 'head_office' ? 'selected' : '' }}>Head Office — Jakarta Pusat</option>
-                                <option value="bandung" {{ old('work_location') == 'bandung' ? 'selected' : '' }}>Branch — Bandung</option>
-                                <option value="surabaya" {{ old('work_location') == 'surabaya' ? 'selected' : '' }}>Branch — Surabaya</option>
-                                <option value="remote" {{ old('work_location') == 'remote' ? 'selected' : '' }}>Remote</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -340,15 +330,14 @@
                         <select name="identity[tax_status_ptkp]"
                             class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white focus:border-blue-500 transition @error('identity.tax_status_ptkp') border-red-400 @enderror">
                             <option value="">Select PTKP status...</option>
-                            <option value="TK0" {{ old('identity.tax_status_ptkp') == 'TK0' ? 'selected' : '' }}>TK/0 — Single, no dependents</option>
-                            <option value="TK1" {{ old('identity.tax_status_ptkp') == 'TK1' ? 'selected' : '' }}>TK/1 — Single, 1 dependent</option>
-                            <option value="TK2" {{ old('identity.tax_status_ptkp') == 'TK2' ? 'selected' : '' }}>TK/2 — Single, 2 dependents</option>
-                            <option value="TK3" {{ old('identity.tax_status_ptkp') == 'TK3' ? 'selected' : '' }}>TK/3 — Single, 3 dependents</option>
-                            <option value="K0" {{ old('identity.tax_status_ptkp') == 'K0'  ? 'selected' : '' }}>K/0 — Married, no dependents</option>
-                            <option value="K1" {{ old('identity.tax_status_ptkp') == 'K1'  ? 'selected' : '' }}>K/1 — Married, 1 dependent</option>
-                            <option value="K2" {{ old('identity.tax_status_ptkp') == 'K2'  ? 'selected' : '' }}>K/2 — Married, 2 dependents</option>
-                            <option value="K3" {{ old('identity.tax_status_ptkp') == 'K3'  ? 'selected' : '' }}>K/3 — Married, 3 dependents</option>
-                            <option value="KI0" {{ old('identity.tax_status_ptkp') == 'KI0' ? 'selected' : '' }}>K/I/0 — Combined income, no dependents</option>
+                            <option value="TK/0" {{ old('identity.tax_status_ptkp') == 'TK/0' ? 'selected' : '' }}>TK/0 — Single, no dependents</option>
+                            <option value="TK/1" {{ old('identity.tax_status_ptkp') == 'TK/1' ? 'selected' : '' }}>TK/1 — Single, 1 dependent</option>
+                            <option value="TK/2" {{ old('identity.tax_status_ptkp') == 'TK/2' ? 'selected' : '' }}>TK/2 — Single, 2 dependents</option>
+                            <option value="TK/3" {{ old('identity.tax_status_ptkp') == 'TK/3' ? 'selected' : '' }}>TK/3 — Single, 3 dependents</option>
+                            <option value="K/0" {{ old('identity.tax_status_ptkp') == 'K/0'  ? 'selected' : '' }}>K/0 — Married, no dependents</option>
+                            <option value="K/1" {{ old('identity.tax_status_ptkp') == 'K/1'  ? 'selected' : '' }}>K/1 — Married, 1 dependent</option>
+                            <option value="K/2" {{ old('identity.tax_status_ptkp') == 'K/2'  ? 'selected' : '' }}>K/2 — Married, 2 dependents</option>
+                            <option value="K/3" {{ old('identity.tax_status_ptkp') == 'K/3'  ? 'selected' : '' }}>K/3 — Married, 3 dependents</option>
                         </select>
                         @error('identity.tax_status_ptkp')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                     </div>
@@ -528,9 +517,9 @@
                         <select name="last_education"
                             class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white focus:border-blue-500 transition">
                             <option value="">Select education...</option>
-                            <option value="SMA" {{ old('last_education') == 'SMA/SMK' ? 'selected' : '' }}>SMA / SMK / Sederajat</option>
-                            <option value="D3" {{ old('last_education') == 'D1/D2/D3' ? 'selected' : '' }}>D1 / D2 / D3</option>
-                            <option value="S1" {{ old('last_education') == 'S1/D4' ? 'selected' : '' }}>S1 / D4</option>
+                            <option value="SMA/SMK" {{ old('last_education') == 'SMA/SMK' ? 'selected' : '' }}>SMA / SMK / Sederajat</option>
+                            <option value="D1/D2/D3" {{ old('last_education') == 'D1/D2/D3' ? 'selected' : '' }}>D1 / D2 / D3</option>
+                            <option value="S1/D4" {{ old('last_education') == 'S1/D4' ? 'selected' : '' }}>S1 / D4</option>
                             <option value="S2" {{ old('last_education') == 'S2' ? 'selected' : '' }}>S2 (Master)</option>
                             <option value="S3" {{ old('last_education') == 'S3' ? 'selected' : '' }}>S3 (Doktor)</option>
                         </select>
@@ -661,13 +650,6 @@
                                 <option value="biweekly" {{ old('salary.pay_frequency') == 'biweekly' ? 'selected' : '' }}>Bi-weekly</option>
                                 <option value="weekly" {{ old('salary.pay_frequency') == 'weekly' ? 'selected' : '' }}>Weekly</option>
                             </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Payroll Notes</label>
-                            <textarea rows="2"
-                                name="salary[notes]"
-                                placeholder="Additional payroll notes..."
-                                class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 transition resize-none">{{ old('salary.notes') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -824,14 +806,6 @@
                                         class="flex-1 px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-red-400 transition @error('emergency.0.phone_number') border-red-400 @enderror">
                                 </div>
                                 @error('emergency.0.phone_number')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Alternative Phone</label>
-                                <div class="flex gap-2">
-                                    <span class="px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium">+62</span>
-                                    <input type="tel" placeholder="Optional"
-                                        class="flex-1 px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-red-400 transition">
-                                </div>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Address</label>

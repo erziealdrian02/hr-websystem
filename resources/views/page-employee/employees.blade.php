@@ -38,7 +38,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 fade-in js-grid-body" style="animation-delay: 0.2s;">
             @foreach ($employees as $employee)
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md transition-shadow hover-scale group">
-                <div class="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative"></div>
+                <div class="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative">
+                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this employee?')" class="p-1.5 bg-white/20 hover:bg-red-600 text-white rounded-lg backdrop-blur-md transition-all border border-white/30" title="Delete Employee">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
                 <div class="px-6 pb-6 relative -mt-12 text-center">
                     @if($employee->profile_photo)
                     <img src="{{ asset('storage/' . $employee->profile_photo) }}" class="w-24 h-24 mx-auto rounded-full border-4 border-white dark:border-slate-800 object-cover" alt="Employee">
@@ -110,6 +120,8 @@
         <script>
             // Form callback implementation
             window.onCreateEmployee = function(formData) {
+                const employeeId = responseData?.id ?? '';
+                const detailUrl = employeeId ? `/employees/${employeeId}/detail` : '#';
                 const name = formData.get('name');
                 const title = formData.get('title');
                 const dept = formData.get('dept');
@@ -126,7 +138,7 @@
                             <div>${empId}</div>
                             <div>${dept}</div>
                         </div>
-                        <a href="{{ route('employees.detail', $employee->id) }}" class="mt-5 block w-full bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 py-2 rounded-lg font-medium text-sm transition-colors">View Full Profile</a>
+                        <a href="${detailUrl}" class="...">View Full Profile</a>
                     </div>
                 </div>
             `;

@@ -7,10 +7,13 @@ use App\Models\Employee;
 use App\Models\EmployeeBank;
 use App\Models\EmployeeEmergency;
 use App\Models\EmployeeIndentities;
+use App\Models\EmployeePayroll;
+use App\Models\Payroll;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -124,8 +127,23 @@ class EmployeeController extends Controller
     {
         $title = 'Form Employee - HRIS';
         $divisions = Division::all();
+        $managers = Employee::all();
 
-        return view('page-employee.employee-form', compact('title'));
+        $today = Carbon::now()->format('ymd');
+
+        $lastEmployee = Employee::where('employee_number', 'like', $today . '%')
+            ->orderBy('employee_number', 'desc')
+            ->first();
+
+        if ($lastEmployee) {
+            $lastNumber = (int) substr($lastEmployee->employee_number, -3);
+            $nextNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '001';
+        }
+        $employeeNumber = $today . $nextNumber;
+
+        return view('page-employee.employee-form', compact('title', 'divisions', 'managers', 'employeeNumber'));
     }
 
     public function employeeStore(Request $request)
@@ -146,7 +164,6 @@ class EmployeeController extends Controller
             'division_id'       => 'required|string',
             'manager_id'        => 'nullable|string',
             'work_email'        => 'nullable|email',
-            'work_location'     => 'nullable|string',
             'is_remote'         => 'nullable|boolean',
             'profile_photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
 
@@ -220,7 +237,6 @@ class EmployeeController extends Controller
         $employeeData->division_id = $request->division_id;
         $employeeData->manager_id = $request->manager_id;
         $employeeData->work_email = $request->work_email;
-        $employeeData->work_location = $request->work_location;
         $employeeData->gender = $request->gender;
         $employeeData->religion = $request->religion;
         $employeeData->place_of_birth = $request->place_of_birth;
@@ -235,36 +251,9 @@ class EmployeeController extends Controller
         $employeeData->field_of_study = $request->field_of_study;
         $employeeData->blood_type = $request->blood_type;
         $employeeData->nationality = $request->nationality;
-
-        // $employeeData = $request->only([
-        //     'employee_number',
-        //     'employment_status',
-        //     'join_date',
-        //     'contract_end_date',
-        //     'full_name',
-        //     'job_title',
-        //     'division_id',
-        //     'manager_id',
-        //     'work_email',
-        //     'work_location',
-        //     'gender',
-        //     'religion',
-        //     'place_of_birth',
-        //     'date_of_birth',
-        //     'marital_status',
-        //     'dependents_count',
-        //     'personal_email',
-        //     'phone_number',
-        //     'ktp_address',
-        //     'domicile_address',
-        //     'last_education',
-        //     'field_of_study',
-        //     'blood_type',
-        //     'nationality',
-        // ]);
-
-        // Checkbox is_remote: jika tidak dicentang tidak terkirim → default 0
         $employeeData['is_remote'] = $request->boolean('is_remote');
+        $employeeData->created_by = Auth::user()->id;
+        $employeeData->updated_by = Auth::user()->id;
 
         // Handle upload foto profil
         if ($request->hasFile('profile_photo')) {
@@ -276,8 +265,6 @@ class EmployeeController extends Controller
                 );
         }
 
-        $employeeData->save();
-
         // ----------------------------------------------------------
         // 3. IDENTITY (tabel: employee_identities)
         // ----------------------------------------------------------
@@ -287,62 +274,91 @@ class EmployeeController extends Controller
         if ($request->hasFile('ktp_document')) {
             $identityData['ktp_document_path'] = $request
                 ->file('ktp_document')
-                ->store('employees/docs', 'public');
+                ->store('employees/docs' . $uuid, 'public');
         }
 
         // Handle upload dokumen NPWP
         if ($request->hasFile('npwp_document')) {
             $identityData['npwp_document_path'] = $request
                 ->file('npwp_document')
-                ->store('employees/docs', 'public');
+                ->store('employees/docs' . $uuid, 'public');
         }
 
-        EmployeeIndentities::create(
-            array_merge(
-                ['id' => (string) \Illuminate\Support\Str::uuid(), 'employee_id' => $employee->id],
-                $identityData
-            )
-        );
+        $employeeIdentity = new EmployeeIndentities();
+        $employeeIdentity->id = (string) \Illuminate\Support\Str::uuid();
+        $employeeIdentity->employee_id = $uuid;
+        $employeeIdentity->nik_ktp = $identityData['nik_ktp'];
+        $employeeIdentity->npwp = $identityData['npwp'];
+        $employeeIdentity->bpjs_ketenagakerjaan = $identityData['bpjs_ketenagakerjaan'];
+        $employeeIdentity->bpjs_kesehatan = $identityData['bpjs_kesehatan'];
+        $employeeIdentity->passport_number = $identityData['passport_number'];
+        $employeeIdentity->passport_expiry = $identityData['passport_expiry'];
+        $employeeIdentity->tax_status_ptkp = $identityData['tax_status_ptkp'];
+        $employeeIdentity->tax_method = $identityData['tax_method'];
+        $employeeIdentity->ktp_document_path = $identityData['ktp_document_path'];
+        $employeeIdentity->npwp_document_path = $identityData['npwp_document_path'];
+        $employeeIdentity->created_by = Auth::user()->id;
+        $employeeIdentity->updated_by = Auth::user()->id;
 
         // ----------------------------------------------------------
         // 4. BANK ACCOUNT (tabel: employee_bank_accounts)
         // ----------------------------------------------------------
-        EmployeeBank::create(
-            array_merge(
-                ['id' => (string) \Illuminate\Support\Str::uuid(), 'employee_id' => $employee->id],
-                $request->input('bank', [])
-            )
-        );
+        $bankData = $request->input('bank', []);
+
+        // dd($bankData);
+        $employeeBank = new EmployeeBank();
+        $employeeBank->id = (string) \Illuminate\Support\Str::uuid();
+        $employeeBank->employee_id = $uuid;
+        $employeeBank->bank_name = $bankData['bank_name'];
+        $employeeBank->bank_branch = $bankData['bank_branch'];
+        $employeeBank->account_number = $bankData['account_number'];
+        $employeeBank->account_holder_name = $bankData['account_holder_name'];
+        $employeeBank->is_primary = $bankData['is_primary'];
+        $employeeBank->created_by = Auth::user()->id;
+        $employeeBank->updated_by = Auth::user()->id;
 
         // ----------------------------------------------------------
         // 5. SALARY / PAYROLL (tabel: payrolls)
         //    Hitung allowance_total dari semua tunjangan
         // ----------------------------------------------------------
-        $salaryInput = $request->input('salary', []);
+        $salaryData = $request->input('salary', []);
 
         // Bersihkan format angka (kalau ada titik ribuan dari JS)
         $cleanNumber = fn($v) => (float) str_replace(['.', ','], ['', '.'], $v ?? 0);
+        $basicSalary    = $cleanNumber($salaryData['basic_salary'] ?? 0);
 
-        $basicSalary      = $cleanNumber($salaryInput['basic_salary'] ?? 0);
-        $allowPosition    = $cleanNumber($salaryInput['allowance_position'] ?? 0);
-        $allowMeal        = $cleanNumber($salaryInput['allowance_meal'] ?? 0);
-        $allowTransport   = $cleanNumber($salaryInput['allowance_transport'] ?? 0);
-        $allowOther       = $cleanNumber($salaryInput['allowance_other'] ?? 0);
-        $allowanceTotal   = $allowPosition + $allowMeal + $allowTransport + $allowOther;
-        $grossPay         = $basicSalary + $allowanceTotal;
+        $allowPosition  = $cleanNumber($salaryData['allowance_position'] ?? 0);
+        $allowMeal      = $cleanNumber($salaryData['allowance_meal'] ?? 0);
+        $allowTransport = $cleanNumber($salaryData['allowance_transport'] ?? 0);
+        $allowOther     = $cleanNumber($salaryData['allowance_other'] ?? 0);
 
-        \App\Models\Payroll::create([
-            'id'               => (string) \Illuminate\Support\Str::uuid(),
-            'employee_id'      => $employee->id,
-            'period_year'      => now()->year,
-            'period_month'     => now()->month,
-            'basic_salary'     => $basicSalary,
-            'allowance_total'  => $allowanceTotal,
-            'gross_pay'        => $grossPay,
-            'net_pay'          => $grossPay, // akan dihitung ulang saat proses payroll
-            'status'           => 'draft',
-            'notes'            => $salaryInput['notes'] ?? null,
-        ]);
+        $allowanceTotal = $allowPosition + $allowMeal + $allowTransport + $allowOther;
+        $grossPay       = $basicSalary + $allowanceTotal;
+
+        $bpjsBase = $basicSalary;
+
+        $deductionBpjsKes = $bpjsBase * 0.01; // 1%  
+        $deductionBpjsJht = $bpjsBase * 0.02; // 2%  
+        $deductionBpjsJp  = $bpjsBase * 0.01; // 
+        $deductionTotal = $deductionBpjsJp + $deductionBpjsJht + $deductionBpjsKes;
+
+        $employeePayroll = new EmployeePayroll();
+        $employeePayroll->id = (string) \Illuminate\Support\Str::uuid();
+        $employeePayroll->employee_id = $uuid;
+        $employeePayroll->basic_salary = $basicSalary;
+        $employeePayroll->allowance_position = $allowPosition;
+        $employeePayroll->allowance_meal = $allowMeal;
+        $employeePayroll->allowance_transport = $allowTransport;
+        $employeePayroll->allowance_other = $allowOther;
+        $employeePayroll->allowance_total = $allowanceTotal;
+        $employeePayroll->gross_pay = $grossPay;
+        $employeePayroll->deduction_bpjs_kes = $deductionBpjsKes;
+        $employeePayroll->deduction_bpjs_jht = $deductionBpjsJht;
+        $employeePayroll->deduction_bpjs_jp = $deductionBpjsJp;
+        $employeePayroll->total_deductions = $deductionTotal;
+        $employeePayroll->net_pay = $grossPay - $deductionTotal;
+        $employeePayroll->created_by = Auth::user()->id;
+        $employeePayroll->updated_by = Auth::user()->id;
 
         // ----------------------------------------------------------
         // 6. EMERGENCY CONTACTS (tabel: emergency_contacts)
@@ -354,22 +370,37 @@ class EmployeeController extends Controller
             // Skip jika nama kosong (bisa terjadi jika ada input kosong)
             if (empty(trim($contact['contact_name'] ?? ''))) continue;
 
-            EmployeeEmergency::create([
-                'id'           => (string) \Illuminate\Support\Str::uuid(),
-                'employee_id'  => $employee->id,
-                'contact_name' => $contact['contact_name'],
-                'relationship' => $contact['relationship'],
-                'phone_number' => $contact['phone_number'],
-                'is_primary'   => (bool) ($contact['is_primary'] ?? false),
-                'address'      => $contact['address'] ?? null,
-            ]);
+            $employeeEmergency = new EmployeeEmergency();
+            $employeeEmergency->id = (string) \Illuminate\Support\Str::uuid();
+            $employeeEmergency->employee_id = $uuid;
+            $employeeEmergency->contact_name = $contact['contact_name'];
+            $employeeEmergency->relationship = $contact['relationship'];
+            $employeeEmergency->phone_number = $contact['phone_number'];
+            $employeeEmergency->is_primary = $contact['is_primary'];
+            $employeeEmergency->address = $contact['address'];
+            $employeeEmergency->created_by = Auth::user()->id;
+            $employeeEmergency->updated_by = Auth::user()->id;
+
+            $employeeEmergency->save();
         }
+
+        $employeePayroll->save();
+        $employeeBank->save();
+        $employeeIdentity->save();
+        $employeeData->save();
 
         // ----------------------------------------------------------
         // 7. REDIRECT
         // ----------------------------------------------------------
         return redirect()
             ->route('employees.index')
-            ->with('success', "Employee {$employee->full_name} has been created successfully.");
+            ->with('success', "Employee {$employeeData->full_name} has been created successfully.");
+    }
+
+    public function employeeDestroy($id)
+    {
+        $employee = Employee::findOrFail($id);
+        $employee->delete();
+        return redirect()->route('employees.index')->with('success', 'Employee deleted successfully');
     }
 }
