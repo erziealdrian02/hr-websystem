@@ -15,6 +15,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/styles.css', 'resources/js/script.js', 'resources/js/components.js', 'resources/js/modal.js', 'resources/js/bootstrap.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- TomSelect -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
     <style>
         /* === Animations === */
         .fade-in {
@@ -306,6 +310,75 @@
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
         }
+
+        /* === TomSelect Custom Styles === */
+        .ts-wrapper .ts-control {
+            border-radius: 0.5rem !important;
+            padding: 0.5rem 0.75rem !important;
+            border-color: #e5e7eb !important;
+            background-color: #f9fafb !important;
+            font-size: 0.875rem !important;
+            color: #111827 !important;
+            box-shadow: none !important;
+            position: relative;
+        }
+
+        .ts-wrapper.focus .ts-control {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+            position: relative;
+        }
+
+        .dark .ts-wrapper .ts-control {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* Target the search input specifically */
+        .ts-wrapper .ts-control>input {
+            color: inherit !important;
+            font-size: inherit !important;
+        }
+
+        .dark .ts-wrapper .ts-control>input {
+            color: #f1f5f9 !important;
+        }
+
+        .ts-dropdown {
+            border-radius: 0.5rem !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            margin-top: 4px !important;
+            z-index: 9999 !important;
+        }
+
+        .dark .ts-dropdown {
+            background-color: #1e293b !important;
+            color: #f1f5f9 !important;
+            border-color: #334155 !important;
+        }
+
+        .ts-dropdown .option {
+            color: inherit !important;
+        }
+
+        .ts-dropdown .active {
+            background-color: #eff6ff !important;
+            color: #2563eb !important;
+        }
+
+        .dark .ts-dropdown .active {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+
+        .ts-dropdown .optgroup-header {
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.025em !important;
+            padding: 0.5rem 0.75rem !important;
+        }
     </style>
 </head>
 
@@ -322,6 +395,22 @@
             </main>
         </div>
     </div>
+
+    @foreach (['success', 'error', 'warning', 'info'] as $type)
+    @if(session($type))
+    <div class="hidden js-toast-trigger" data-message="{{ session($type) }}" data-type="{{ $type }}"></div>
+    @endif
+    @endforeach
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.js-toast-trigger').forEach(el => {
+                if (typeof showToast === 'function') {
+                    showToast(el.dataset.message, el.dataset.type);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -32,6 +32,16 @@ class Employee extends Model
 
     public function emergency()
     {
-        return $this->hasOne(EmployeeEmergency::class, 'employee_id', 'id');
+        return $this->hasMany(EmployeeEmergency::class, 'employee_id', 'id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(Employee::class, 'manager_id', 'id');
+    }
+
+    public function payroll()
+    {
+        return $this->hasOne(EmployeePayroll::class, 'employee_id', 'id');
     }
 }

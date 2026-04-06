@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
 
     {{-- ============================================================
      SINGLE FORM — semua step ada di dalam 1 <form>
@@ -210,43 +210,35 @@
                                 name="job_title"
                                 placeholder="e.g. Senior Frontend Developer"
                                 value="{{ old('job_title') }}"
-                                class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 transition @error('job_title') border-red-400 @enderror">
+                                class="w-full px-3 py-2.5 text-sm rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 transition @error('job_title') border-red-400 @enderror">
                             @error('job_title')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5 required">Department</label>
                             {{-- division_id → relasi ke tabel divisions, idealnya diisi dari DB --}}
                             <select name="division_id"
-                                class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 transition @error('division_id') border-red-400 @enderror">
+                                class="w-full tom-select px-3 py-2.5 text-sm rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 transition @error('division_id') border-red-400 @enderror">
                                 <option value="">Select department...</option>
                                 @foreach($divisions ?? [] as $division)
                                 <option value="{{ $division->id }}" {{ old('division_id') == $division->id ? 'selected' : '' }}>
                                     {{ $division->name }}
                                 </option>
                                 @endforeach
-                                {{-- Fallback jika $divisions belum dipass dari controller --}}
-                                @if(empty($divisions))
-                                <option value="engineering">Engineering / Tech</option>
-                                <option value="hr">Human Resources</option>
-                                <option value="finance">Finance & Accounting</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="sales">Sales</option>
-                                <option value="operations">Operations</option>
-                                <option value="legal">Legal & Compliance</option>
-                                <option value="product">Product</option>
-                                <option value="cs">Customer Support</option>
-                                @endif
                             </select>
                             @error('division_id')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Reporting To (Direct Manager)</label>
                             {{-- manager_id → ID employee yang jadi manager --}}
-                            <input type="text"
-                                name="manager_id"
-                                placeholder="Search manager name..."
-                                value="{{ old('manager_id') }}"
-                                class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 transition">
+                            <select name="manager_id"
+                                class="w-full tom-select text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select Manager...</option>
+                                @foreach($managers as $manager)
+                                <option value="{{ $manager->id }}" {{ old('manager_id') == $manager->id ? 'selected' : '' }}>
+                                    {{ $manager->full_name }}
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Work Email</label>
@@ -1301,14 +1293,6 @@
                         class="flex-1 px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 transition">
                 </div>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Alternative Phone</label>
-                <div class="flex gap-2">
-                    <span class="px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium">+62</span>
-                    <input type="tel" placeholder="Optional"
-                        class="flex-1 px-3 py-2.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 transition">
-                </div>
-            </div>
             <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1.5">Address</label>
                 <textarea rows="2" name="emergency[${idx}][address]" placeholder="Contact's address..."
@@ -1349,4 +1333,17 @@
         }
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.tom-select').forEach((el) => {
+                new TomSelect(el, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

@@ -20,6 +20,8 @@ class EmployeeController extends Controller
     public function employees(Request $request)
     {
         $title = 'All Employees - HRIS';
+
+        $managers = Employee::all();
         $search = $request->query('search');
         $perPage = $request->query('per_page', 10);
 
@@ -29,40 +31,41 @@ class EmployeeController extends Controller
 
         $employees = Employee::query()
             ->when($search, function ($query, $search) {
-                return $query->where(function($q) use ($search) {
+                return $query->where(function ($q) use ($search) {
                     $q->where('full_name', 'like', "%{$search}%")
-                      ->orWhere('employee_number', 'like', "%{$search}%")
-                      ->orWhere('job_title', 'like', "%{$search}%");
+                        ->orWhere('employee_number', 'like', "%{$search}%")
+                        ->orWhere('job_title', 'like', "%{$search}%");
                 });
             })
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_deleted', '0')
-                      ->orWhereNull('is_deleted');
+                    ->orWhereNull('is_deleted');
             })
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
 
-        return view('page-employee.employees', compact('employees', 'title', 'search', 'perPage'));
+        return view('page-employee.employees', compact('employees', 'title', 'search', 'perPage', 'managers'));
     }
 
     public function employeeDetail($id)
     {
         $title = 'Employee Detail - HRIS';
-        $employee = Employee::findOrFail($id);
-        // dd($employee->identity->nik_ktp);
+        $employee = Employee::with(['identity', 'bank', 'emergency', 'division', 'manager'])->findOrFail($id);
+        $emergencies = $employee->emergency;
 
-        return view('page-employee.employee-detail', compact('title', 'employee'));
+        return view('page-employee.employee-detail', compact('title', 'employee', 'emergencies'));
     }
 
     public function employeeEdit($id)
     {
         $title = 'Employee Edit - HRIS';
-        $employee = Employee::findOrFail($id);
+        $employee = Employee::with(['identity', 'bank', 'emergency', 'division'])->findOrFail($id);
         $managers = Employee::all();
         $divisions = Division::all();
+        $payroll = EmployeePayroll::where('employee_id', $id)->first();
 
-        return view('page-employee.employee-form-update', compact('title', 'employee', 'divisions', 'managers'));
+        return view('page-employee.employee-form-update', compact('title', 'employee', 'divisions', 'managers', 'payroll'));
     }
 
     public function employeeUpdate(Request $request, $id)
@@ -102,15 +105,31 @@ class EmployeeController extends Controller
 
         // --- Identity ---
         if ($request->has('identity')) {
+            $identityData = $request->input('identity');
+
+            // Handle KTP document
+            if ($request->hasFile('ktp_document')) {
+                $path = $request->file('ktp_document')->store('employees/docs/' . $employee->id, 'public');
+                $identityData['ktp_document_path'] = $path;
+            }
+
+            // Handle NPWP document
+            if ($request->hasFile('npwp_document')) {
+                $path = $request->file('npwp_document')->store('employees/docs/' . $employee->id, 'public');
+                $identityData['npwp_document_path'] = $path;
+            }
+
             EmployeeIndentities::updateOrCreate(
                 ['employee_id' => $id],
                 [
-                    'nik_ktp'               => $request->input('identity.nik_ktp'),
-                    'npwp'                  => $request->input('identity.npwp'),
-                    'bpjs_ketenagakerjaan'  => $request->input('identity.bpjs_ketenagakerjaan'),
-                    'bpjs_kesehatan'        => $request->input('identity.bpjs_kesehatan'),
-                    'passport_number'       => $request->input('identity.passport_number'),
-                    'tax_status_ptkp'       => $request->input('identity.tax_status_ptkp'),
+                    'nik_ktp'               => $identityData['nik_ktp'],
+                    'npwp'                  => $identityData['npwp'],
+                    'bpjs_ketenagakerjaan'  => $identityData['bpjs_ketenagakerjaan'],
+                    'bpjs_kesehatan'        => $identityData['bpjs_kesehatan'],
+                    'passport_number'       => $identityData['passport_number'],
+                    'tax_status_ptkp'       => $identityData['tax_status_ptkp'],
+                    'ktp_document_path'     => $identityData['ktp_document_path'] ?? null,
+                    'npwp_document_path'    => $identityData['npwp_document_path'] ?? null,
                 ]
             );
         }
@@ -128,17 +147,70 @@ class EmployeeController extends Controller
             );
         }
 
-        // --- Emergency Contact ---
-        if ($request->has('emergency')) {
-            EmployeeEmergency::updateOrCreate(
+        // --- Payroll ---
+        if ($request->has('salary')) {
+            $salaryData = $request->input('salary');
+            $cleanNumber = fn($v) => (float) str_replace(['.', ','], ['', '.'], $v ?? 0);
+
+            $basicSalary    = $cleanNumber($salaryData['basic_salary'] ?? 0);
+            $allowPosition  = $cleanNumber($salaryData['allowance_position'] ?? 0);
+            $allowMeal      = $cleanNumber($salaryData['allowance_meal'] ?? 0);
+            $allowTransport = $cleanNumber($salaryData['allowance_transport'] ?? 0);
+            $allowOther     = $cleanNumber($salaryData['allowance_other'] ?? 0);
+
+            $allowanceTotal = $allowPosition + $allowMeal + $allowTransport + $allowOther;
+            $grossPay       = $basicSalary + $allowanceTotal;
+
+            $bpjsBase = $basicSalary;
+            $deductionBpjsKes = $bpjsBase * 0.01;
+            $deductionBpjsJht = $bpjsBase * 0.02;
+            $deductionBpjsJp  = $bpjsBase * 0.01;
+            $deductionTotal = $deductionBpjsJp + $deductionBpjsJht + $deductionBpjsKes;
+
+            EmployeePayroll::updateOrCreate(
                 ['employee_id' => $id],
                 [
-                    'contact_name'  => $request->input('emergency.contact_name'),
-                    'relationship'  => $request->input('emergency.relationship'),
-                    'phone_number'  => $request->input('emergency.phone_number'),
-                    'address'       => $request->input('emergency.address'),
+                    'id'                   => (string) \Illuminate\Support\Str::uuid(),
+                    'basic_salary'         => $basicSalary,
+                    'allowance_position'   => $allowPosition,
+                    'allowance_meal'       => $allowMeal,
+                    'allowance_transport'  => $allowTransport,
+                    'allowance_other'      => $allowOther,
+                    'allowance_total'      => $allowanceTotal,
+                    'gross_pay'            => $grossPay,
+                    'deduction_bpjs_kes'   => $deductionBpjsKes,
+                    'deduction_bpjs_jht'   => $deductionBpjsJht,
+                    'deduction_bpjs_jp'    => $deductionBpjsJp,
+                    'total_deductions'     => $deductionTotal,
+                    'net_pay'              => $grossPay - $deductionTotal,
+                    'updated_by'           => Auth::user()->id,
                 ]
             );
+        }
+
+        // --- Emergency Contact ---
+        if ($request->has('emergency')) {
+            $emergencyContacts = $request->input('emergency', []);
+
+            // Simple sync: delete and recreate
+            EmployeeEmergency::where('employee_id', $id)->delete();
+
+            foreach ($emergencyContacts as $contact) {
+                if (empty(trim($contact['contact_name'] ?? ''))) continue;
+
+                $employeeEmergency = new EmployeeEmergency();
+                $employeeEmergency->id = (string) \Illuminate\Support\Str::uuid();
+                $employeeEmergency->employee_id = $employee->id;
+                $employeeEmergency->contact_name = $contact['contact_name'];
+                $employeeEmergency->relationship = $contact['relationship'];
+                $employeeEmergency->phone_number = $contact['phone_number'];
+                $employeeEmergency->is_primary = $contact['is_primary'] ?? 0;
+                $employeeEmergency->address = $contact['address'];
+                $employeeEmergency->created_by = Auth::user()->id;
+                $employeeEmergency->updated_by = Auth::user()->id;
+
+                $employeeEmergency->save();
+            }
         }
 
         return redirect()->route('employees.detail', $id)->with('success', 'Employee updated successfully');

@@ -66,8 +66,12 @@
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Reporting To</p>
                     <p class="text-gray-900 dark:text-white font-medium mt-1 flex items-center">
-                        <img src="https://ui-avatars.com/api/?name=Alex+Tech&background=random" class="w-5 h-5 rounded-full mr-2" alt="">
-                        Alex Tech Lead
+                        @if($employee->manager)
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($employee->manager->full_name) }}&background=random" class="w-5 h-5 rounded-full mr-2" alt="">
+                        {{ $employee->manager->full_name }}
+                        @else
+                        —
+                        @endif
                     </p>
                 </div>
             </div>
@@ -110,6 +114,36 @@
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Tax Status (PTKP)</p>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->tax_status_ptkp ?? 'N/A'}}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">KTP Document</p>
+                        @if($employee->identity && $employee->identity->ktp_document_path)
+                        <a href="{{ asset('storage/' . $employee->identity->ktp_document_path) }}" target="_blank" class="text-blue-600 dark:text-blue-400 text-xs hover:underline flex items-center mt-1">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            View File
+                        </a>
+                        @else
+                        <p class="text-[10px] text-gray-400">Not uploaded</p>
+                        @endif
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">NPWP Document</p>
+                        @if($employee->identity && $employee->identity->npwp_document_path)
+                        <a href="{{ asset('storage/' . $employee->identity->npwp_document_path) }}" target="_blank" class="text-blue-600 dark:text-blue-400 text-xs hover:underline flex items-center mt-1">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            View File
+                        </a>
+                        @else
+                        <p class="text-[10px] text-gray-400">Not uploaded</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -189,7 +223,65 @@
             </div>
         </div>
 
-        <!-- Emergency Contact -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Allowance & Salary
+            </h3>
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+
+                <!-- ITEM -->
+                @php
+                function rupiah($value) {
+                return 'Rp ' . number_format($value ?? 0, 0, ',', '.');
+                }
+                @endphp
+
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Basic Salary</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->basic_salary) }}</p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Position Allowance</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_position) }}</p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Meal Allowance</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_meal) }}</p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Transport Allowance</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_transport) }}</p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Other Allowances</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_other) }}</p>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="col-span-2 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800/40 mt-2">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase">
+                            Total Salary Package
+                        </p>
+                        <p class="text-lg font-bold text-blue-700 dark:text-blue-300 font-mono">
+                            {{ rupiah($employee->payroll->gross_pay) }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="mt-8 fade-in" style="animation-delay: 0.25s;">
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,21 +289,27 @@
                 </svg>
                 Emergency Contacts
             </h3>
-            <div class="space-y-4">
+
+            <div id="emergency-contacts-container" class="space-y-4 text-left">
+                @forelse($emergencies as $emergency)
                 <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="font-bold text-gray-900 dark:text-white">{{ $employee->emergency->contact_name ?? 'N/A'}}</p>
-                            <p class="text-xs text-red-600 dark:text-red-400 font-semibold uppercase mt-1">{{ $employee->emergency->relationship ?? 'N/A'}}</p>
+                            <p class="font-bold text-gray-900 dark:text-white">{{ $emergency->contact_name ?? 'N/A'}}</p>
+                            <p class="text-xs text-red-600 dark:text-red-400 font-semibold uppercase mt-1">{{ $emergency->relationship ?? 'N/A'}}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-bold text-gray-900 dark:text-white">{{ $employee->emergency->phone_number ?? 'N/A'}}</p>
+                            <p class="font-bold text-gray-900 dark:text-white">0{{ $emergency->phone_number ?? 'N/A'}}</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ $employee->emergency->address ?? 'N/A'}}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ $emergency->address ?? 'N/A'}}</p>
                 </div>
+                @empty
+                <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">No emergency contacts found.</p>
+                </div>
+                @endforelse
             </div>
         </div>
-
     </div>
 </x-app-layout>
