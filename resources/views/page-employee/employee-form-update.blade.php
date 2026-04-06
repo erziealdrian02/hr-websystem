@@ -67,24 +67,24 @@
                         <div class="mb-3">
                             <label class="block text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-1">Full Name</label>
                             <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}"
-                                class="w-full text-2xl font-bold text-gray-900 dark:text-white bg-transparent border-b-2 border-blue-300 dark:border-blue-700 focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none pb-1 transition-colors"
+                                class="w-full text-2xl font-bold rounded-lg text-gray-900 dark:text-white bg-transparent border-b-2 border-blue-300 dark:border-blue-700 focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none pb-1 transition-colors"
                                 placeholder="Employee Full Name" required>
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-1">Job Title</label>
                             <input type="text" name="job_title" value="{{ old('job_title', $employee->job_title) }}"
-                                class="w-full text-blue-600 dark:text-blue-400 font-medium text-lg bg-transparent border-b-2 border-blue-300 dark:border-blue-700 focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none pb-1 transition-colors"
+                                class="w-full rounded-lg text-blue-600 dark:text-blue-400  font-medium text-lg bg-transparent border-b-2 border-blue-300 dark:border-blue-700 focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none pb-1 transition-colors"
                                 placeholder="Job Title" required>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-1">Employment Status</label>
                         <select name="employment_status"
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="active" {{ strtolower($employee->employment_status) === 'active' ? 'selected' : '' }}>Active Employee</option>
-                            <option value="inactive" {{ strtolower($employee->employment_status) === 'inactive' ? 'selected' : '' }}>Inactive Employee</option>
-                            <option value="probation" {{ strtolower($employee->employment_status) === 'probation' ? 'selected' : '' }}>Probation Employee</option>
-                            <option value="contract" {{ strtolower($employee->employment_status) === 'contract' ? 'selected' : '' }}>Contract Employee</option>
+                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-black dark:bg-blue-700 dark:text-white border border-blue-200 dark:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="active" {{ strtolower($employee->employment_status) === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ strtolower($employee->employment_status) === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="probation" {{ strtolower($employee->employment_status) === 'probation' ? 'selected' : '' }}>Probation</option>
+                            <option value="contract" {{ strtolower($employee->employment_status) === 'contract' ? 'selected' : '' }}>Contract</option>
                         </select>
                     </div>
                 </div>
@@ -192,12 +192,6 @@
                 </h3>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Full Name</label>
-                            <input type="text" name="full_name" value="{{ old('full_name', $employee->full_name) }}"
-                                class="w-full text-sm font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Full Name" required>
-                        </div>
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Gender</label>
                             <select name="gender"
@@ -309,15 +303,9 @@
                             </div>
                             <div>
                                 <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Relationship</label>
-                                <select name="emergency[relationship]"
-                                    class="w-full text-sm font-semibold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
-                                    <option value="">— Select —</option>
-                                    @foreach(['Spouse','Parent','Sibling','Child','Friend','Other'] as $rel)
-                                    <option value="{{ $rel }}" {{ old('emergency.relationship', $employee->emergency->relationship ?? '') === $rel ? 'selected' : '' }}>
-                                        {{ $rel }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="emergency[relationship]" value="{{ old('emergency.relationship', $employee->emergency->relationship ?? '') }}"
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                    placeholder="Relationship">
                             </div>
                             <div>
                                 <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Phone Number</label>

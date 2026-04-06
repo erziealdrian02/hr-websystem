@@ -11,6 +11,8 @@ class Employee extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $fillable = ['user_id', 'employee_number', 'full_name', 'profile_photo', 'job_title', 'division_id', 'manager_id', 'work_email', 'work_location', 'employment_status', 'join_date', 'contract_end_date', 'is_remote', 'gender', 'religion', 'place_of_birth', 'date_of_birth', 'marital_status', 'dependents_count', 'personal_email', 'phone_number', 'ktp_address', 'domicile_address', 'last_education', 'field_of_study', 'blood_type', 'nationality', 'created_by', 'updated_by'];
+
     public function division()
     {
         return $this->belongsTo(Division::class, 'division_id', 'id');
