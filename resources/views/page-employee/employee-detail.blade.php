@@ -17,37 +17,41 @@
                 </svg>
                 Print Profile
             </button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+            <a href="{{ route('employees.edit', $employee->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                 </svg>
                 Edit
-            </button>
+            </a>
         </div>
     </div>
 
     <!-- Profile Header Card -->
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 mb-8 flex flex-col md:flex-row gap-6 items-center md:items-start fade-in" style="animation-delay: 0.1s;">
-        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="w-32 h-32 rounded-lg object-cover shadow-sm" alt="Employee">
+        @if($employee->profile_photo)
+        <img src="{{ asset('storage/' . $employee->profile_photo) }}" class="w-32 h-32 rounded-lg object-cover shadow-sm" alt="Employee">
+        @else
+        <img src="https://ui-avatars.com/api/?name={{ urlencode($employee->full_name) }}&background=random&color=fff&size=200" class="w-32 h-32 rounded-lg object-cover shadow-sm" alt="Employee">
+        @endif
         <div class="flex-1 text-center md:text-left">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Sarah Williams</h2>
-                    <p class="text-blue-600 dark:text-blue-400 font-medium text-lg">Senior Frontend Developer</p>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $employee->full_name }}</h2>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium text-lg">{{ $employee->job_title }}</p>
                 </div>
                 <span class="inline-flex mt-2 md:mt-0 items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                    Active Employee
+                    {{ ucfirst(strtolower($employee->employment_status)) }} Employee
                 </span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-100 dark:border-gray-700 w-full text-left">
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Employee ID</p>
-                    <p class="text-gray-900 dark:text-white font-medium mt-1">EMP-1025</p>
+                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ $employee->employee_number }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Department</p>
-                    <p class="text-gray-900 dark:text-white font-medium mt-1">Engineering / Tech</p>
+                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ $employee->division->name }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Reporting To</p>
@@ -75,27 +79,27 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">NIK (KTP)</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">3174021508900002</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->nik_ktp ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">NPWP</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">09.234.567.8-012.000</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->npwp ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">BPJS Ketenagakerjaan</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">12345678901</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->bpjs_ketenagakerjaan ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">BPJS Kesehatan</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">0001234567890</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->bpjs_kesehatan ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Passport No.</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">-</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->passport_number ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Tax Status (PTKP)</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">TK/0 (Single, 0 Dep)</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->identity->tax_status_ptkp ?? 'N/A'}}</p>
                     </div>
                 </div>
             </div>
@@ -113,27 +117,27 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Full Name</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Sarah Williams</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->full_name }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Gender</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Female</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ ucfirst(strtolower($employee->gender)) }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Place / Date of Birth</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Jakarta, 15 Aug 1990</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->place_of_birth }}, {{ $employee->date_of_birth }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Religion</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Islam</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->religion }}</p>
                     </div>
                     <div class="col-span-2">
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Current Address</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Jl. Sudirman Kav 21, Apartemen Mawar, Tower B Lt 10, Jakarta Pusat</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->domicile_address }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Personal Email</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">sarah.williams90@gmail.com</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->personal_email }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Phone Number</p>
@@ -155,20 +159,20 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Bank Name</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">BCA (Bank Central Asia)</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->bank->bank_name ?? 'N/A' }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Branch</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">KCU Thamrin</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $employee->bank->bank_branch ?? 'N/A' }}</p>
                     </div>
                     <div class="col-span-2 flex justify-between bg-gray-50 dark:bg-slate-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-600">
                         <div>
                             <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Account Number</p>
-                            <p class="text-lg font-bold tracking-wider text-gray-900 dark:text-white">8210 *** ***</p>
+                            <p class="text-lg font-bold tracking-wider text-gray-900 dark:text-white">{{ $employee->bank->account_number ?? 'N/A' }}</p>
                         </div>
                         <div class="text-right">
                             <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Account Holder</p>
-                            <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">SARAH WILLIAMS</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">{{ $employee->bank->account_holder_name ?? 'N/A' }}</p>
                         </div>
                     </div>
                 </div>
@@ -187,14 +191,14 @@
                 <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="font-bold text-gray-900 dark:text-white">Michael Williams</p>
-                            <p class="text-xs text-red-600 dark:text-red-400 font-semibold uppercase mt-1">Husband</p>
+                            <p class="font-bold text-gray-900 dark:text-white">{{ $employee->emergency->contact_name ?? 'N/A'}}</p>
+                            <p class="text-xs text-red-600 dark:text-red-400 font-semibold uppercase mt-1">{{ $employee->emergency->relationship ?? 'N/A'}}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-bold text-gray-900 dark:text-white">+62 811 9988 7766</p>
+                            <p class="font-bold text-gray-900 dark:text-white">{{ $employee->emergency->phone_number ?? 'N/A'}}</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Jl. Sudirman Kav 21, Apartemen Mawar, Tower B Lt 10</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ $employee->emergency->address ?? 'N/A'}}</p>
                 </div>
             </div>
         </div>
