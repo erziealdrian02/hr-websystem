@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <!-- Back Button & Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
         <div>
@@ -99,7 +99,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-1">Department</label>
                         <select name="division_id"
-                            class="w-full text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full tom-select text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             @foreach($divisions as $division)
                             <option value="{{ $division->id }}" {{ $employee->division_id == $division->id ? 'selected' : '' }}>
                                 {{ $division->name }}
@@ -110,7 +110,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-1">Reporting To</label>
                         <select name="manager_id"
-                            class="w-full text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full tom-select text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">— None —</option>
                             @foreach($managers as $manager)
                             <option value="{{ $manager->id }}" {{ $employee->manager_id == $manager->id ? 'selected' : '' }}>
@@ -177,6 +177,36 @@
                                 </option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-span-2 grid grid-cols-2 gap-4 pt-2 border-t border-gray-100 dark:border-gray-700 mt-2">
+                        <div>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">KTP Document (Upload)</label>
+                            <input type="file" name="ktp_document" accept="image/*,.pdf"
+                                class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition" />
+                            @if($employee->identity->ktp_document_path)
+                            <a href="{{ asset('storage/' . $employee->identity->ktp_document_path) }}" target="_blank" class="inline-flex items-center mt-1 text-[10px] text-blue-600 dark:text-blue-400 hover:underline">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                View Current KTP
+                            </a>
+                            @endif
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">NPWP Document (Upload)</label>
+                            <input type="file" name="npwp_document" accept="image/*,.pdf"
+                                class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition" />
+                            @if($employee->identity->npwp_document_path)
+                            <a href="{{ asset('storage/' . $employee->identity->npwp_document_path) }}" target="_blank" class="inline-flex items-center mt-1 text-[10px] text-blue-600 dark:text-blue-400 hover:underline">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                View Current NPWP
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -284,49 +314,135 @@
                 </div>
             </div>
 
-            <!-- Emergency Contacts -->
+            <!-- Allowance & Salary Details -->
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Emergency Contacts
+                    Allowance & Salary
                 </h3>
                 <div class="space-y-4">
-                    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Contact Name</label>
-                                <input type="text" name="emergency[contact_name]" value="{{ old('emergency.contact_name', $employee->emergency->contact_name ?? '') }}"
-                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                                    placeholder="Contact Full Name">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Relationship</label>
-                                <input type="text" name="emergency[relationship]" value="{{ old('emergency.relationship', $employee->emergency->relationship ?? '') }}"
-                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                                    placeholder="Relationship">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Phone Number</label>
-                                <input type="text" name="emergency[phone_number]" value="{{ old('emergency.phone_number', $employee->emergency->phone_number ?? '') }}"
-                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
-                                    placeholder="+62 812 XXXX XXXX">
-                            </div>
-                            <div>
-                                {{-- Spacer to keep layout aligned --}}
-                            </div>
-                            <div class="col-span-2">
-                                <label class="block text-xs text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Address</label>
-                                <textarea name="emergency[address]" rows="2"
-                                    class="w-full text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
-                                    placeholder="Emergency contact address">{{ old('emergency.address', $employee->emergency->address ?? '') }}</textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Basic Salary (Rp)</label>
+                            <input type="text" name="salary[basic_salary]" value="{{ number_format($payroll->basic_salary ?? 0, 0, ',', '.') }}"
+                                oninput="formatCurrency(this); calculateTotalSalary()"
+                                class="salary-input w-full text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Position Allowance (Rp)</label>
+                            <input type="text" name="salary[allowance_position]" value="{{ number_format($payroll->allowance_position ?? 0, 0, ',', '.') }}"
+                                oninput="formatCurrency(this); calculateTotalSalary()"
+                                class="salary-input w-full text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Meal Allowance (Rp)</label>
+                            <input type="text" name="salary[allowance_meal]" value="{{ number_format($payroll->allowance_meal ?? 0, 0, ',', '.') }}"
+                                oninput="formatCurrency(this); calculateTotalSalary()"
+                                class="salary-input w-full text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Transport Allowance (Rp)</label>
+                            <input type="text" name="salary[allowance_transport]" value="{{ number_format($payroll->allowance_transport ?? 0, 0, ',', '.') }}"
+                                oninput="formatCurrency(this); calculateTotalSalary()"
+                                class="salary-input w-full text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Other Allowances (Rp)</label>
+                            <input type="text" name="salary[allowance_other]" value="{{ number_format($payroll->allowance_other ?? 0, 0, ',', '.') }}"
+                                oninput="formatCurrency(this); calculateTotalSalary()"
+                                class="salary-input w-full text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="col-span-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800/40">
+                            <div class="flex justify-between items-center">
+                                <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase">Total Salary Package</p>
+                                <p class="text-base font-bold text-blue-700 dark:text-blue-300 font-mono" id="total-salary-display">Rp {{ number_format($payroll->gross_pay ?? 0, 0, ',', '.') }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Emergency Contacts (Below the Grid) -->
+        <div class="mt-8 fade-in" style="animation-delay: 0.25s;">
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Emergency Contacts
+                    </div>
+                    <button type="button" onclick="addEmergencyContact()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
+                        + Add More
+                    </button>
+                </h3>
+
+                <div id="emergency-contacts-container" class="space-y-4 text-left">
+                    @forelse($employee->emergency as $idx => $contact)
+                    <div class="emergency-contact-item bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30 relative">
+                        @if($idx > 0)
+                        <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-400 hover:text-red-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        @endif
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Contact Name</label>
+                                <input type="text" name="emergency[{{ $idx }}][contact_name]" value="{{ $contact->contact_name }}"
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Relationship</label>
+                                <input type="text" name="emergency[{{ $idx }}][relationship]" value="{{ $contact->relationship }}"
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Phone Number</label>
+                                <input type="text" name="emergency[{{ $idx }}][phone_number]" value="{{ $contact->phone_number }}"
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                                <input type="hidden" name="emergency[{{ $idx }}][is_primary]" value="{{ $contact->is_primary }}">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Address</label>
+                                <textarea name="emergency[{{ $idx }}][address]" rows="2"
+                                    class="w-full text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none">{{ $contact->address }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="emergency-contact-item bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Contact Name</label>
+                                <input type="text" name="emergency[0][contact_name]" value=""
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Relationship</label>
+                                <input type="text" name="emergency[0][relationship]" value=""
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Phone Number</label>
+                                <input type="text" name="emergency[0][phone_number]" value=""
+                                    class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                                <input type="hidden" name="emergency[0][is_primary]" value="1">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Address</label>
+                                <textarea name="emergency[0][address]" rows="2"
+                                    class="w-full text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
 
         <!-- Bottom Submit Bar -->
@@ -355,5 +471,68 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        function formatCurrency(input) {
+            let value = input.value.replace(/\D/g, "");
+            input.value = new Intl.NumberFormat("id-ID").format(value);
+        }
+
+        function calculateTotalSalary() {
+            let total = 0;
+            document.querySelectorAll('.salary-input').forEach(input => {
+                let val = parseInt(input.value.replace(/\D/g, "")) || 0;
+                total += val;
+            });
+            document.getElementById('total-salary-display').textContent = 'Rp ' + new Intl.NumberFormat("id-ID").format(total);
+        }
+
+        function addEmergencyContact() {
+            const container = document.getElementById('emergency-contacts-container');
+            const idx = container.querySelectorAll('.emergency-contact-item').length;
+            const html = `
+                <div class="emergency-contact-item bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/30 relative mt-4">
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-400 hover:text-red-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Contact Name</label>
+                            <input type="text" name="emergency[${idx}][contact_name]" 
+                                class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Relationship</label>
+                            <input type="text" name="emergency[${idx}][relationship]" 
+                                class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Phone Number</label>
+                            <input type="text" name="emergency[${idx}][phone_number]" 
+                                class="w-full text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            <input type="hidden" name="emergency[${idx}][is_primary]" value="0">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] text-red-600 dark:text-red-400 font-semibold uppercase mb-1">Address</label>
+                            <textarea name="emergency[${idx}][address]" rows="2"
+                                class="w-full text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.tom-select').forEach((el) => {
+                new TomSelect(el, {
+                    create: false,
+                    dropdownParent: 'body',
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+            });
+        });
     </script>
 </x-app-layout>
