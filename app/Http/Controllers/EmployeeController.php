@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
     public function employees()
     {
-        // Data dummy untuk employees
-        $employees = [
-            ['id' => 1, 'name' => 'John Doe', 'position' => 'Software Engineer', 'department' => 'IT', 'status' => 'Active'],
-            ['id' => 2, 'name' => 'Jane Smith', 'position' => 'HR Manager', 'department' => 'HR', 'status' => 'Active'],
-            ['id' => 3, 'name' => 'Bob Johnson', 'position' => 'Marketing Specialist', 'department' => 'Marketing', 'status' => 'On Leave'],
-            ['id' => 4, 'name' => 'Alice Williams', 'position' => 'Designer', 'department' => 'Design', 'status' => 'Active'],
-        ];
+        $title = 'All Employees - HRIS';
+        $employees = Employee::all();
 
-        
-        return view('page-employee.employees', compact('employees'));
+        return view('page-employee.employees', compact('employees', 'title'));
     }
 
-    public function employeeDetail()
+    public function employeeDetail($id)
     {
-        return view('page-employee.employee-detail');
+        $title = 'Employee Detail - HRIS';
+        $employee = Employee::findOrFail($id);
+
+        return view('page-employee.employee-detail', compact('title', 'employee'));
     }
 
     public function employeeForm()
     {
-        return view('page-employee.employee-form');
+        $title = 'Form Employee - HRIS';
+        return view('page-employee.employee-form', compact('title'));
     }
 }

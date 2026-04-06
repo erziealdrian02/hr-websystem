@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/employees', [EmployeeController::class, 'employees'])->name('employees.index');
-    Route::get('/employees/detail', [EmployeeController::class, 'employeeDetail'])->name('employees.detail');
+    Route::get('/employees/detail/{id}', [EmployeeController::class, 'employeeDetail'])->name('employees.detail');
     Route::get('/employees/form', [EmployeeController::class, 'employeeForm'])->name('employees.form');
 
     Route::get('/placement', [PlacementController::class, 'placement'])->name('placement.index');

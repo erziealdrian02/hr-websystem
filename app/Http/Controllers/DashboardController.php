@@ -12,14 +12,9 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-        // Data dummy untuk dashboard
-        $stats = [
-            'total_employees' => 150,
-            'on_leave' => 5,
-            'new_hires' => 12,
-        ];
+        $title = 'Dashboard - HRIS';
 
-        return view('dashboard', compact('stats'));
+        return view('dashboard', compact('title'));
     }
 
     /**

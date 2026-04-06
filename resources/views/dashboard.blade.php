@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 fade-in">
         <div>
