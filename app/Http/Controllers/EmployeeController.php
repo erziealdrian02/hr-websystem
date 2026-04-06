@@ -72,8 +72,6 @@ class EmployeeController extends Controller
             $employee->profile_photo = $path;
         }
 
-        dd($request->full_name);
-
         $employee->save();
 
         // --- Identity ---
