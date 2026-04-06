@@ -22,19 +22,28 @@
             </div>
         </div>
 
-        <!-- Filters & Search -->
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex flex-col md:flex-row gap-4 fade-in" style="animation-delay: 0.1s;">
+        <form action="{{ route('employees.index') }}" method="GET" class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex flex-col md:flex-row gap-4 fade-in" style="animation-delay: 0.1s;">
             <div class="relative flex-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </span>
-                <input type="text" class="js-search-input w-full py-2 pl-10 pr-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-slate-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Search by name, ID, or department...">
+                <input type="text" name="search" value="{{ $search ?? '' }}" class="w-full py-2 pl-10 pr-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-slate-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Search by name, ID, or job title...">
             </div>
-        </div>
+
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm">
+                Search
+            </button>
+            @if(request('search') || request('per_page'))
+            <a href="{{ route('employees.index') }}" class="bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-center flex items-center justify-center">
+                Clear
+            </a>
+            @endif
+        </form>
 
         <!-- Employee Grid -->
+        @if($employees->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 fade-in js-grid-body" style="animation-delay: 0.2s;">
             @foreach ($employees as $employee)
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md transition-shadow hover-scale group">
@@ -55,11 +64,11 @@
                     @else
                     <img src="https://ui-avatars.com/api/?name={{ urlencode($employee->full_name) }}&background=random&color=fff&size=200" class="w-24 h-24 mx-auto rounded-full border-4 border-white dark:border-slate-800 object-cover" alt="Employee">
                     @endif
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mt-3">{{ $employee->full_name }}</h3>
-                    <p class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ $employee->job_title }}</p>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mt-3 line-clamp-1">{{ $employee->full_name }}</h3>
+                    <p class="text-sm font-medium text-blue-600 dark:text-blue-400 line-clamp-1">{{ $employee->job_title }}</p>
                     <div class="mt-4 flex flex-col gap-1 text-sm text-gray-500 dark:text-gray-400">
                         <div class="flex items-center justify-center gap-1">{{ $employee->employee_number }}</div>
-                        <div class="flex items-center justify-center gap-1">{{ $employee->division->name }}</div>
+                        <div class="flex items-center justify-center gap-1">{{ $employee->division->name ?? 'No Division' }}</div>
                     </div>
                     <a href="{{ route('employees.detail', $employee->id) }}" class="mt-5 block w-full bg-blue-50 text-blue-600 py-2 rounded-lg font-medium text-sm transition-colors dark:bg-blue-900/30 dark:hover:bg-blue-900/50">View Full Profile</a>
                 </div>
@@ -67,8 +76,43 @@
             @endforeach
         </div>
 
-        <!-- Pagination Placeholder -->
-        <div class="js-pagination-controls mt-6"></div>
+        <!-- Pagination & Entry Info -->
+        <div class="flex flex-col gap-4 mt-8 bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm fade-in">
+
+            <!-- TOP BAR -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <form action="{{ route('employees.index') }}" method="GET">
+                    <select
+                        name="per_page"
+                        onchange="this.form.submit()"
+                        class="py-2 pl-3 pr-10 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg dark:bg-slate-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 min-w-[90px]">
+                        <option value="10" {{ ($perPage ?? 10) == 10 ? 'selected' : '' }}>10</option>
+                        <option value="30" {{ ($perPage ?? 10) == 30 ? 'selected' : '' }}>30</option>
+                        <option value="50" {{ ($perPage ?? 10) == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ ($perPage ?? 10) == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </form>
+
+                <div class="flex justify-center md:justify-end">
+                    {{ $employees->links() }}
+                </div>
+
+                <!-- RIGHT: DROPDOWN -->
+            </div>
+
+        </div>
+        @else
+        <div class="flex flex-col items-center justify-center py-12 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 fade-in">
+            <div class="w-20 h-20 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">No employees found</h3>
+            <p class="text-gray-500 dark:text-gray-400 mt-1 text-center">We couldn't find any employees matching your search criteria.</p>
+            <a href="{{ route('employees.index') }}" class="mt-4 text-blue-600 hover:underline font-medium">Clear search and view all</a>
+        </div>
+        @endif
 
         <!-- Modals -->
         <div id="addEmployeeModal" class="hidden fixed inset-0 z-50 items-center justify-center modal-container">

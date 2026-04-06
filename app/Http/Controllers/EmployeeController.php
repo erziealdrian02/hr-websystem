@@ -17,12 +17,33 @@ use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
-    public function employees()
+    public function employees(Request $request)
     {
         $title = 'All Employees - HRIS';
-        $employees = Employee::all();
+        $search = $request->query('search');
+        $perPage = $request->query('per_page', 10);
 
-        return view('page-employee.employees', compact('employees', 'title'));
+        if (!in_array($perPage, [10, 30, 50, 100])) {
+            $perPage = 10;
+        }
+
+        $employees = Employee::query()
+            ->when($search, function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%")
+                      ->orWhere('employee_number', 'like', "%{$search}%")
+                      ->orWhere('job_title', 'like', "%{$search}%");
+                });
+            })
+            ->where(function($query) {
+                $query->where('is_deleted', '0')
+                      ->orWhereNull('is_deleted');
+            })
+            ->latest()
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('page-employee.employees', compact('employees', 'title', 'search', 'perPage'));
     }
 
     public function employeeDetail($id)
@@ -400,7 +421,9 @@ class EmployeeController extends Controller
     public function employeeDestroy($id)
     {
         $employee = Employee::findOrFail($id);
-        $employee->delete();
+        $employee->is_deleted = '1';
+        $employee->deleted_at = now();
+        $employee->save();
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully');
     }
 }
