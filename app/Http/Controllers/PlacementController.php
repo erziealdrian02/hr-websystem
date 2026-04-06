@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Placement;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,10 @@ class PlacementController extends Controller
     public function placement()
     {
         $tile = 'Placement - HRIS';
-        return view('page-placement.placement', compact('tile'));
+        $employees = Employee::all();
+        // dd($employees->placement->get());
+
+        return view('page-placement.placement', compact('tile', 'employees'));
     }
 
     public function placementForm()

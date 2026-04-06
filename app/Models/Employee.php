@@ -34,4 +34,9 @@ class Employee extends Model
     {
         return $this->hasOne(EmployeeEmergency::class, 'employee_id', 'id');
     }
+
+    public function placement()
+    {
+        return $this->hasOne(Placement::class, 'id', 'work_location');
+    }
 }
