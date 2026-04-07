@@ -14,7 +14,7 @@ class PlacementController extends Controller
     public function placement()
     {
         $tile = 'Placement - HRIS';
-        $employees = Employee::with('placement')->get();
+        $employees = Employee::with('placement')->whereNotNull('work_location')->get();
         // dd($employees->placement->get());
 
         return view('page-placement.placement', compact('tile', 'employees'));

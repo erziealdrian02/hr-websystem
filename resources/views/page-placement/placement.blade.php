@@ -165,11 +165,41 @@
                                 }}
                             </p>
                         </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Penempatan
-                                Baru</span></td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Aktif</span>
+                        @php
+                        $type = $employee->placement?->placement_type;
+
+                        $typeClass = match($type) {
+                        'new_placement' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                        'mutation' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                        'extension' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+                        'withdrawal' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                        default => 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+                        };
+
+                        $status = $employee->placement?->status;
+
+                        $statusClass = match($status) {
+                        'active' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                        'pending' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                        'completed' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                        'cancelled' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                        default => 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+                        };
+
+                        $typeLabel = $type ? ucfirst(str_replace('_', ' ', $type)) : '-';
+                        $statusLabel = $status ? ucfirst($status) : '-';
+                        @endphp
+
+                        <td class="px-5 py-4">
+                            <span class="badge {{ $typeClass }}">
+                                {{ $typeLabel }}
+                            </span>
+                        </td>
+
+                        <td class="px-5 py-4">
+                            <span class="badge {{ $statusClass }}">
+                                {{ $statusLabel }}
+                            </span>
                         </td>
                         <td class="px-5 py-4">
                             <button
