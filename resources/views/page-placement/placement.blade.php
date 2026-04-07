@@ -108,21 +108,25 @@
                     </tr>
                 </thead>
                 <tbody id="placement-tbody" class="text-sm divide-y divide-gray-100 dark:divide-gray-700">
+                    @foreach ($employees as $employee)
                     <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=3b82f6&color=fff&size=32"
-                                    class="w-8 h-8 rounded-full flex-shrink-0" alt="">
+                                @if($employee->profile_photo)
+                                <img src="{{ asset('storage/' . $employee->profile_photo) }}" class="w-8 h-8 rounded-full border-4 border-white dark:border-slate-800 object-cover" alt="Employee">
+                                @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($employee->full_name) }}&background=random&color=fff&size=200" class="w-8 h-8 rounded-full border-4 border-white dark:border-slate-800 object-cover" alt="Employee">
+                                @endif
                                 <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">Sarah
-                                        Williams</p>
-                                    <p class="text-xs text-gray-500">EMP-1025</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ $employee->full_name }}</p>
+                                    <p class="text-xs text-gray-500">{{ $employee->employee_number }}</p>
                                 </div>
                             </div>
                         </td>
                         <td
                             class="px-5 py-4 text-blue-600 dark:text-blue-400 font-mono text-xs font-semibold">
-                            SK/HR/04-2026/012</td>
+                            {{ $employee->placement?->sk_number ?? '-' }}
+                        </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-2">
                                 <div
@@ -130,8 +134,7 @@
                                     <span class="text-xs font-bold text-red-600 dark:text-red-400">C</span>
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">CNBC
-                                        Indonesia</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ $employee->placement?->clientLocation?->client_name ?? '-' }}</p>
                                     <p class="text-xs text-gray-500 flex items-center gap-1">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -139,21 +142,64 @@
                                                 stroke-width="2"
                                                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         </svg>
-                                        Kebon Sirih, Jakarta
+                                        {{ $employee->placement?->clientLocation?->city ?? '-' }}, {{ $employee->placement?->clientLocation?->province ?? '-' }}
                                     </p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">Video Editor</td>
+                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">{{ $employee->placement?->position_at_client ?? '-' }}</td>
                         <td class="px-5 py-4 text-gray-600 dark:text-gray-400 text-xs">
-                            <p>01 Apr 2026</p>
-                            <p class="text-gray-400">s/d 31 Mar 2027</p>
+                            <p>
+                                {{
+                                    $employee->placement?->start_date
+                                    ? \Carbon\Carbon::parse($employee->placement->start_date)->format('d M Y')
+                                    : '-'
+                                }}
+                            </p>
+                            s/d
+                            <p>
+                                {{
+                                    $employee->placement?->end_date
+                                    ? \Carbon\Carbon::parse($employee->placement->end_date)->format('d M Y')
+                                    : '-'
+                                }}
+                            </p>
                         </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Penempatan
-                                Baru</span></td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Aktif</span>
+                        @php
+                        $type = $employee->placement?->placement_type;
+
+                        $typeClass = match($type) {
+                        'new_placement' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                        'mutation' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                        'extension' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+                        'withdrawal' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                        default => 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+                        };
+
+                        $status = $employee->placement?->status;
+
+                        $statusClass = match($status) {
+                        'active' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                        'pending' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+                        'completed' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                        'cancelled' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                        default => 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+                        };
+
+                        $typeLabel = $type ? ucfirst(str_replace('_', ' ', $type)) : '-';
+                        $statusLabel = $status ? ucfirst($status) : '-';
+                        @endphp
+
+                        <td class="px-5 py-4">
+                            <span class="badge {{ $typeClass }}">
+                                {{ $typeLabel }}
+                            </span>
+                        </td>
+
+                        <td class="px-5 py-4">
+                            <span class="badge {{ $statusClass }}">
+                                {{ $statusLabel }}
+                            </span>
                         </td>
                         <td class="px-5 py-4">
                             <button
@@ -168,130 +214,8 @@
                             </button>
                         </td>
                     </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-5 py-4">
-                            <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=10b981&color=fff&size=32"
-                                    class="w-8 h-8 rounded-full flex-shrink-0" alt="">
-                                <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">Budi
-                                        Santoso</p>
-                                    <p class="text-xs text-gray-500">EMP-1018</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td
-                            class="px-5 py-4 text-blue-600 dark:text-blue-400 font-mono text-xs font-semibold">
-                            SK/HR/03-2026/008</td>
-                        <td class="px-5 py-4">
-                            <div class="flex items-center gap-2">
-                                <div
-                                    class="w-6 h-6 rounded bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center flex-shrink-0">
-                                    <span
-                                        class="text-xs font-bold text-yellow-600 dark:text-yellow-400">M</span>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">Bank
-                                        Mandiri</p>
-                                    <p class="text-xs text-gray-500 flex items-center gap-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        </svg>
-                                        Plaza Mandiri, SCBD
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">IT Support Analyst
-                        </td>
-                        <td class="px-5 py-4 text-gray-600 dark:text-gray-400 text-xs">
-                            <p>15 Mar 2026</p>
-                            <p class="text-gray-400">s/d 14 Mar 2027</p>
-                        </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Mutasi</span>
-                        </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Aktif</span>
-                        </td>
-                        <td class="px-5 py-4">
-                            <button
-                                class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-5 py-4">
-                            <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Dina+Rahayu&background=f59e0b&color=fff&size=32"
-                                    class="w-8 h-8 rounded-full flex-shrink-0" alt="">
-                                <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">Dina
-                                        Rahayu</p>
-                                    <p class="text-xs text-gray-500">EMP-1031</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td
-                            class="px-5 py-4 text-blue-600 dark:text-blue-400 font-mono text-xs font-semibold">
-                            SK/HR/04-2026/015</td>
-                        <td class="px-5 py-4">
-                            <div class="flex items-center gap-2">
-                                <div
-                                    class="w-6 h-6 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                                    <span
-                                        class="text-xs font-bold text-blue-600 dark:text-blue-400">T</span>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">Telkom
-                                        Indonesia</p>
-                                    <p class="text-xs text-gray-500 flex items-center gap-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        </svg>
-                                        Gatot Subroto, Jakarta
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">Customer Relations
-                        </td>
-                        <td class="px-5 py-4 text-gray-600 dark:text-gray-400 text-xs">
-                            <p>01 Apr 2026</p>
-                            <p class="text-red-400 font-medium">s/d 30 Apr 2026 ⚠️</p>
-                        </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Perpanjangan</span>
-                        </td>
-                        <td class="px-5 py-4"><span
-                                class="badge bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Pending</span>
-                        </td>
-                        <td class="px-5 py-4">
-                            <button
-                                class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                    @endforeach
+
                 </tbody>
             </table>
         </div>

@@ -1,4 +1,13 @@
 <x-app-layout>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 350px;
+            width: 100%;
+            border-radius: 0.5rem;
+            z-index: 0;
+        }
+    </style>
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
         <div>
@@ -654,5 +663,7 @@
             initMap();
         });
     </script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </x-app-layout>

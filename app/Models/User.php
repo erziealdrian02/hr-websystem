@@ -22,6 +22,12 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected function casts(): array
     {
         return [

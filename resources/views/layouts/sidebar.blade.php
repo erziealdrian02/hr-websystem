@@ -28,6 +28,14 @@
                 </svg>
                 <span class="mx-2 text-sm font-medium">Employees</span>
             </a>
+            <a href="{{ route('client-locations.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-gray-200">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 21h18M9 8h6m-6 4h6m-6 4h6M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14">
+                    </path>
+                </svg>
+                <span class="mx-2 text-sm font-medium">Client Location</span>
+            </a>
             <a href="{{ route('placement.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-gray-200">
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path>
