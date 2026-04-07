@@ -243,27 +243,27 @@
 
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Basic Salary</p>
-                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->basic_salary) }}</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->basic_salary ?? 0) }}</p>
                 </div>
 
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Position Allowance</p>
-                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_position) }}</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_position ?? 0) }}</p>
                 </div>
 
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Meal Allowance</p>
-                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_meal) }}</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_meal ?? 0) }}</p>
                 </div>
 
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Transport Allowance</p>
-                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_transport) }}</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_transport ?? 0) }}</p>
                 </div>
 
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Other Allowances</p>
-                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_other) }}</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ rupiah($employee->payroll->allowance_other ?? 0) }}</p>
                 </div>
 
                 <!-- TOTAL -->
@@ -273,7 +273,7 @@
                             Total Salary Package
                         </p>
                         <p class="text-lg font-bold text-blue-700 dark:text-blue-300 font-mono">
-                            {{ rupiah($employee->payroll->gross_pay) }}
+                            {{ rupiah($employee->payroll->gross_pay ?? 0) }}
                         </p>
                     </div>
                 </div>
