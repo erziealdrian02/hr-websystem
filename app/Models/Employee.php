@@ -37,6 +37,6 @@ class Employee extends Model
 
     public function placement()
     {
-        return $this->hasOne(Placement::class, 'id', 'work_location');
+        return $this->hasOne(Placement::class, 'employee_id', 'id');
     }
 }

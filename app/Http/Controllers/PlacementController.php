@@ -14,7 +14,7 @@ class PlacementController extends Controller
     public function placement()
     {
         $tile = 'Placement - HRIS';
-        $employees = Employee::all();
+        $employees = Employee::with('placement')->get();
         // dd($employees->placement->get());
 
         return view('page-placement.placement', compact('tile', 'employees'));

@@ -125,7 +125,7 @@
                         </td>
                         <td
                             class="px-5 py-4 text-blue-600 dark:text-blue-400 font-mono text-xs font-semibold">
-                            {{ $employee->placement->sk_number }}
+                            {{ $employee->placement?->sk_number ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-2">
@@ -134,8 +134,7 @@
                                     <span class="text-xs font-bold text-red-600 dark:text-red-400">C</span>
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">CNBC
-                                        Indonesia</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ $employee->placement?->clientLocation?->client_name ?? '-' }}</p>
                                     <p class="text-xs text-gray-500 flex items-center gap-1">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -143,15 +142,28 @@
                                                 stroke-width="2"
                                                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         </svg>
-                                        Kebon Sirih, Jakarta
+                                        {{ $employee->placement?->clientLocation?->city ?? '-' }}, {{ $employee->placement?->clientLocation?->province ?? '-' }}
                                     </p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">Video Editor</td>
+                        <td class="px-5 py-4 text-gray-700 dark:text-gray-300 text-sm">{{ $employee->placement?->position_at_client ?? '-' }}</td>
                         <td class="px-5 py-4 text-gray-600 dark:text-gray-400 text-xs">
-                            <p>01 Apr 2026</p>
-                            <p class="text-gray-400">s/d 31 Mar 2027</p>
+                            <p>
+                                {{
+                                    $employee->placement?->start_date
+                                    ? \Carbon\Carbon::parse($employee->placement->start_date)->format('d M Y')
+                                    : '-'
+                                }}
+                            </p>
+                            s/d
+                            <p>
+                                {{
+                                    $employee->placement?->end_date
+                                    ? \Carbon\Carbon::parse($employee->placement->end_date)->format('d M Y')
+                                    : '-'
+                                }}
+                            </p>
                         </td>
                         <td class="px-5 py-4"><span
                                 class="badge bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Penempatan
