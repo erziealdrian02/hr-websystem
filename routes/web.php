@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/placement', [PlacementController::class, 'placement'])->name('placement.index');
     Route::get('/placement/form', [PlacementController::class, 'placementForm'])->name('placement.form');
 
+    Route::resource('client-locations', \App\Http\Controllers\ClientLocationController::class);
+
     Route::get('/division', [DivisionController::class, 'division'])->name('division.index');
     Route::get('/division/form', [DivisionController::class, 'divisionForm'])->name('division.form');
 

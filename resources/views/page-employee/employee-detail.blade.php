@@ -61,7 +61,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Department</p>
-                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ $employee->division->name }}</p>
+                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ $employee->division->name ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Reporting To</p>
