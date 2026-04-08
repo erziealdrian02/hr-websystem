@@ -12,14 +12,19 @@ class DivisionController extends Controller
      */
     public function division()
     {
-        $tile = 'Division - HRIS';
-        return view('page-division.division', compact('tile'));
+        $title = 'Division - HRIS';
+        $divisions = Division::with('employee')->get();
+
+        return view('page-division.division', compact(
+            'title',
+            'divisions'
+        ));
     }
 
     public function divisionForm()
     {
-        $tile = 'Division Form - HRIS';
-        return view('page-division.division-form', compact('tile'));
+        $title = 'Division Form - HRIS';
+        return view('page-division.division-form', compact('title'));
     }
 
     /**

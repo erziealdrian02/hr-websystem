@@ -9,21 +9,22 @@ class Division extends Model
 {
     use HasFactory;
 
-    protected $table = 'placements';
+    protected $table = 'divisions';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'employee_id',
-        'client_location_id',
-        'sk_number',
-        'position_at_client',
-        'start_date',
-        'end_date',
-        'placement_type',
-        'status',
-        'notes',
+        'division_code',
+        'name',
+        'parent_id',
+        'head_employee_id',
+        'head_title',
+        'cost_center',
+        'description',
+        'billing_type',
+        'employee_count',
+        'is_active',
         'created_by',
         'updated_by',
     ];

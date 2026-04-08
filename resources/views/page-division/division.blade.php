@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
         <div>
@@ -20,10 +20,12 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in js-grid-body" style="animation-delay: 0.1s;">
 
         <!-- Division Card 1 -->
+        @foreach ($divisions as $division)
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 hover-scale">
             <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+                <img src="https://ui-avatars.com/api/?name={{ $division->division_code }}&background=random&color=fff&size=200" class="w-24 h-24 mx-auto rounded-full border-4 border-white dark:border-slate-800 object-cover" alt="Employee">
                 <div>
-                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">Engineering & Tech</h3>
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $division->name }}</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">45 Employees</p>
                 </div>
                 <div class="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 p-2 rounded-lg">
@@ -43,6 +45,7 @@
                 </div>
             </div>
         </div>
+        @endforeach
 
         <!-- Division Card 2 -->
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 hover-scale">
