@@ -192,6 +192,7 @@
                                 </svg>
                                 View Current KTP
                             </a>
+                            @else
                             @endif
                         </div>
                         <div>
@@ -206,6 +207,7 @@
                                 </svg>
                                 View Current NPWP
                             </a>
+                            @else
                             @endif
                         </div>
                     </div>
