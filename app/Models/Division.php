@@ -4,26 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Division extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, HasUuids;
 
-    protected $table = 'placements';
+    protected $table = 'divisions';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
     protected $fillable = [
-        'employee_id',
+        'division_code',
+        'name',
         'client_location_id',
-        'sk_number',
-        'position_at_client',
-        'start_date',
-        'end_date',
-        'placement_type',
-        'status',
-        'notes',
+        'head_employee_id',
+        'head_title',
+        'cost_center',
+        'description',
+        'billing_type',
+        'employee_count',
+        'is_active',
         'created_by',
         'updated_by',
     ];
@@ -31,5 +36,15 @@ class Division extends Model
     public function employee()
     {
         return $this->hasMany(Employee::class, 'division_id', 'id');
+    }
+
+    public function manager_division()
+    {
+        return $this->belongsTo(Employee::class, 'head_employee_id', 'id');
+    }
+
+    public function division_client_location()
+    {
+        return $this->belongsTo(ClientLocation::class, 'client_location_id', 'id');
     }
 }
