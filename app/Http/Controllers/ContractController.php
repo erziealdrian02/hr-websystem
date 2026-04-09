@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
@@ -13,7 +14,14 @@ class ContractController extends Controller
     public function contract()
     {
         $tile = 'Contract - HRIS';
-        return view('page-contract.contract', compact('tile'));
+        $contracts = Contract::with('employee')->get();
+        $employees = Employee::all();
+
+        return view('page-contract.contract', compact(
+            'tile',
+            'contracts',
+            'employees'
+        ));
     }
 
     /**
