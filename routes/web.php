@@ -46,7 +46,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/division', [DivisionController::class, 'division'])->name('division.index');
     Route::get('/division/form', [DivisionController::class, 'divisionForm'])->name('division.form');
-
+    Route::post('/division/store', [DivisionController::class, 'store'])->name('division.store');
+    Route::get('/division/edit/{id}', [DivisionController::class, 'edit'])->name('division.edit');
+    Route::put('/division/update/{id}', [DivisionController::class, 'update'])->name('division.update');
+    Route::delete('/division/delete/{id}', [DivisionController::class, 'destroy'])->name('division.destroy');
+    Route::get('/division/generate-code', [DivisionController::class, 'generateCode'])->name('division.generate-code');
     Route::get('/contract', [ContractController::class, 'contract'])->name('contract.index');
 
     Route::get('/attendance', [AttendanceController::class, 'attendance'])->name('attendance.index');

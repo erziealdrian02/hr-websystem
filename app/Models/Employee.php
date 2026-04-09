@@ -49,4 +49,9 @@ class Employee extends Model
     {
         return $this->hasOne(Placement::class, 'employee_id', 'id');
     }
+
+    public function manager_division()
+    {
+        return $this->belongsTo(Division::class, 'head_employee_id', 'id');
+    }
 }

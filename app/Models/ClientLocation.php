@@ -44,4 +44,9 @@ class ClientLocation extends Model
     {
         return $this->hasMany(Placement::class, 'client_location_id', 'id');
     }
+
+    public function division_client_location()
+    {
+        return $this->belongsTo(Division::class, 'client_location_id', 'id');
+    }
 }

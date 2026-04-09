@@ -323,6 +323,10 @@
             position: relative;
         }
 
+        .ts-wrapper.has-icon .ts-control {
+            padding-left: 2.25rem !important;
+        }
+
         .ts-wrapper.focus .ts-control {
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
