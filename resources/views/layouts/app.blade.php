@@ -410,11 +410,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.js-toast-trigger').forEach(el => {
-                if (typeof showToast === 'function') {
-                    showToast(el.dataset.message, el.dataset.type);
-                }
-            });
+            setTimeout(() => {
+                document.querySelectorAll('.js-toast-trigger').forEach(el => {
+                    if (typeof window.showToast === 'function') {
+                        const type = el.dataset.type;
+                        const isError = type !== 'success' && type !== 'info';
+                        const title = type.charAt(0).toUpperCase() + type.slice(1);
+                        window.showToast(title, el.dataset.message, isError);
+                    }
+                });
+            }, 600); // Wait for modal.js script to init
         });
     </script>
 </body>
