@@ -15,7 +15,9 @@ class Division extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
     protected $fillable = [
         'division_code',
         'name',

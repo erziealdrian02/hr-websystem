@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientLocation;
 use App\Models\Division;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DivisionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function division()
     {
         $title = 'Division - HRIS';
@@ -26,57 +25,47 @@ class DivisionController extends Controller
     {
         $title = 'Division Form - HRIS';
         $clientLocations = ClientLocation::get();
+        $managers = Employee::all();
+
         return view('page-division.division-form', compact(
             'title',
-            'clientLocations'
+            'clientLocations',
+            'managers'
         ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:60',
-            'division_code' => 'required|string|max:20|unique:divisions,division_code',
-            'client_location_id' => 'nullable|exists:client_locations,id',
-            'head_employee_id' => 'nullable|exists:employees,id',
-            'head_title' => 'required|string|max:100',
-            'is_active' => 'boolean'
-        ]);
+        $division = new Division();
+        $division->division_code = $request->division_code;
+        $division->name = $request->name;
+        $division->client_location_id = $request->client_location_id;
+        $division->head_employee_id = $request->head_employee_id;
+        $division->head_title = $request->head_title;
+        $division->is_active = $request->has('is_active');
+        $division->updated_by = Auth::id();
+        $division->created_by = Auth::id();
 
-        $validated['created_by'] = auth()->id();
-        $validated['updated_by'] = auth()->id();
-        $validated['is_active'] = $request->has('is_active') ? 1 : 0;
-
-        Division::create($validated);
+        $division->save();
 
         return redirect()->route('division.index')->with('success', 'Divisi berhasil ditambahkan!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $title = 'Edit Division - HRIS';
         $division = Division::with('manager_division')->findOrFail($id);
         $clientLocations = ClientLocation::get();
-        return view('page-division.division-form', compact('title', 'clientLocations', 'division'));
+        $managers = Employee::all();
+
+        return view('page-division.division-form', compact(
+            'title',
+            'clientLocations',
+            'division',
+            'managers'
+        ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $division = Division::findOrFail($id);
@@ -98,9 +87,6 @@ class DivisionController extends Controller
         return redirect()->route('division.index')->with('success', 'Divisi berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $division = Division::findOrFail($id);
@@ -109,14 +95,11 @@ class DivisionController extends Controller
         return redirect()->route('division.index')->with('success', 'Divisi berhasil dihapus!');
     }
 
-    /**
-     * Generate division code based on division name and client location.
-     */
     public function generateCode(Request $request)
     {
         $divisionName = $request->query('division_name');
         $clientId = $request->query('client_id');
-        
+
         if (!$divisionName) {
             return response()->json(['code' => '']);
         }
@@ -155,9 +138,9 @@ class DivisionController extends Controller
 
         // Check if code with this prefix exists, then increment
         $existingDivisions = Division::where('division_code', 'like', $baseCode . '%')
-                                     ->orderBy('division_code', 'desc')
-                                     ->get();
-                                     
+            ->orderBy('division_code', 'desc')
+            ->get();
+
         if ($existingDivisions->isEmpty()) {
             $finalCode = $baseCode . '-1';
         } else {
