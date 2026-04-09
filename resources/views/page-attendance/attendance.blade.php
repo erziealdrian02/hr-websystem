@@ -100,6 +100,19 @@
                             </tr>
                         </thead>
                         <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700">
+                            @foreach ( $attendances as $attendance )
+                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                                <td class="py-4">
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ $attendance->attendance_date }}</p>
+                                </td>
+                                <td class="py-4 text-center font-medium text-gray-700 dark:text-gray-300">{{ $attendance->clock_in }}</td>
+                                <td class="py-4 text-center font-medium text-gray-700 dark:text-gray-300">{{ $attendance->clock_out }}</td>
+                                <td class="py-4 text-center font-medium text-gray-700 dark:text-gray-300">{{ $attendance->working_minutes }}</td>
+                                <td class="py-4">
+                                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">{{ $attendance->status }}</span>
+                                </td>
+                            </tr>
+                            @endforeach
                             <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                                 <td class="py-4">
                                     <p class="font-medium text-gray-900 dark:text-white">Wed, 02 Apr 2026</p>

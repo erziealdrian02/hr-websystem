@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -13,7 +14,15 @@ class AttendanceController extends Controller
     public function attendance()
     {
         $tile = 'Attendance - HRIS';
-        return view('page-attendance.attendance', compact('tile'));
+        $attendances = Attendance::where('user_id', Auth::id())
+            ->where('employee_id', Auth::user()->employee_id)
+            ->latest('attendance_date')
+            ->get();
+
+        return view('page-attendance.attendance', compact(
+            'tile',
+            'attendances'
+        ));
     }
 
     /**
