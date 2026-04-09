@@ -38,6 +38,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/placement', [PlacementController::class, 'placement'])->name('placement.index');
     Route::get('/placement/form', [PlacementController::class, 'placementForm'])->name('placement.form');
+    Route::post('/placement/store', [PlacementController::class, 'store'])->name('placement.store');
+    Route::put('/placement/update/{placement}', [PlacementController::class, 'update'])->name('placement.update');
+    Route::delete('/placement/delete/{placement}', [PlacementController::class, 'destroy'])->name('placement.destroy');
 
     Route::resource('client-locations', \App\Http\Controllers\ClientLocationController::class);
 
