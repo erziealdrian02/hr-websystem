@@ -12,8 +12,8 @@ class LeaveController extends Controller
      */
     public function leave()
     {
-        $tile = 'Leave - HRIS';
-        return view('page-leave.leave', compact('tile'));
+        $title = 'Leave - HRIS';
+        return view('page-leave.leave', compact('title'));
     }
 
     /**

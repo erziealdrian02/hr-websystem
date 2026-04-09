@@ -12,8 +12,8 @@ class PerformanceController extends Controller
      */
     public function performance()
     {
-        $tile = 'Performance - HRIS';
-        return view('page-performance.performance', compact('tile'));
+        $title = 'Performance - HRIS';
+        return view('page-performance.performance', compact('title'));
     }
 
     /**

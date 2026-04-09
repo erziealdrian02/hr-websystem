@@ -8,7 +8,7 @@ class AdminOvertimeController extends Controller
 {
     public function overtimeAdmin()
     {
-        $tile = 'Overtime Request - HRIS';
-        return view('page-admin.admin-overtime', compact('tile'));
+        $title = 'Overtime Request - HRIS';
+        return view('page-admin.admin-overtime', compact('title'));
     }
 }

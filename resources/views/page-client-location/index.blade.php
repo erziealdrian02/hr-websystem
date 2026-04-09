@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         #map {
@@ -98,7 +98,9 @@
                         </td>
                         <td class="px-5 py-4">
                             <span class="inline-flex items-center gap-1 text-xs font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded dark:bg-blue-900/30 dark:text-blue-400">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                </svg>
                                 {{ $loc->attendance_radius_meter }}m
                             </span>
                         </td>
@@ -112,13 +114,17 @@
                         <td class="px-5 py-4 text-right">
                             <div class="flex justify-end gap-2">
                                 <button onclick='editClient(@json($loc))' class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
                                 </button>
                                 <form action="{{ route('client-locations.destroy', $loc->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus klien ini?');" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
                                     </button>
                                 </form>
                             </div>
@@ -148,7 +154,7 @@
             @csrf
             <!-- Method will be dynamically updated for edit -->
             <input type="hidden" name="_method" id="form-method" value="POST">
-            
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- LEFT: Form -->
                 <div class="space-y-6">
@@ -358,15 +364,19 @@
                         <!-- Tombol aksi -->
                         <div class="flex gap-2 flex-wrap pb-4 border-b border-gray-100 dark:border-gray-700">
                             <button type="button" onclick="useMyLocation()" class="flex items-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                                 Lokasi Saya
                             </button>
                             <button type="button" onclick="resetCoords()" class="flex items-center gap-2 px-3 py-2 text-xs font-medium bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
                                 Reset
                             </button>
                         </div>
-                        
+
                         <div class="mt-4">
                             <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Pengaturan Jam Kerja (Opsional)</h4>
                             <div class="grid grid-cols-2 gap-4">
@@ -412,7 +422,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         let map, marker, radiusCircle;
-        let currentLat = null, currentLng = null;
+        let currentLat = null,
+            currentLng = null;
         let currentRadius = 100;
         let isMapInitialized = false;
 
@@ -433,7 +444,7 @@
                 toggleText.textContent = "Tambah Klien Baru";
                 toggleIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />`;
                 pageTitle.textContent = "Client Locations";
-                
+
                 // Reset form values on hide just in case
                 document.getElementById('client-form').reset();
                 document.getElementById('form-method').value = "POST";
@@ -451,7 +462,7 @@
                 // Map Initialization delay logic to prevent gray areas
                 if (!isMapInitialized) {
                     setTimeout(() => {
-                        initMap();  
+                        initMap();
                         isMapInitialized = true;
                     }, 100);
                 } else {
@@ -461,20 +472,29 @@
         }
 
         function initMap() {
-            if(map) { map.remove(); }
-            map = L.map('map', { center: [DEFAULT_LAT, DEFAULT_LNG], zoom: 14, zoomControl: true });
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 19 }).addTo(map);
+            if (map) {
+                map.remove();
+            }
+            map = L.map('map', {
+                center: [DEFAULT_LAT, DEFAULT_LNG],
+                zoom: 14,
+                zoomControl: true
+            });
+            L.tileLayer('https://{s}.title.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19
+            }).addTo(map);
 
             map.on('click', function(e) {
                 setCoordinate(e.latlng.lat, e.latlng.lng);
             });
-            
+
             // If already editing, restore marker right away
             currentLat = parseFloat(document.getElementById('lat-input').value);
             currentLng = parseFloat(document.getElementById('lng-input').value);
-            if(currentLat && currentLng && !isNaN(currentLat)){
-               currentRadius = parseInt(document.getElementById('radius-slider').value) || 100;
-               setCoordinate(currentLat, currentLng);
+            if (currentLat && currentLng && !isNaN(currentLat)) {
+                currentRadius = parseInt(document.getElementById('radius-slider').value) || 100;
+                setCoordinate(currentLat, currentLng);
             }
         }
 
@@ -489,14 +509,18 @@
 
             const icon = L.divIcon({
                 html: `<div style="background:#2563eb;width:20px;height:20px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(37,99,235,0.5);"></div>`,
-                iconSize: [20, 20], iconAnchor: [10, 20], className: ''
+                iconSize: [20, 20],
+                iconAnchor: [10, 20],
+                className: ''
             });
-            marker = L.marker([currentLat, currentLng], { icon }).addTo(map);
+            marker = L.marker([currentLat, currentLng], {
+                icon
+            }).addTo(map);
 
             drawRadius();
             document.getElementById('coord-dot').className = 'w-2 h-2 rounded-full bg-green-500';
             document.getElementById('coord-label').textContent = `Koordinat: ${currentLat}, ${currentLng}`;
-            
+
             // Just pan to don't enforce extreme zoom
             map.panTo([currentLat, currentLng]);
         }
@@ -505,7 +529,12 @@
             if (!currentLat || !currentLng) return;
             if (radiusCircle) map.removeLayer(radiusCircle);
             radiusCircle = L.circle([currentLat, currentLng], {
-                radius: currentRadius, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1, weight: 2, dashArray: '6 4'
+                radius: currentRadius,
+                color: '#3b82f6',
+                fillColor: '#3b82f6',
+                fillOpacity: 0.1,
+                weight: 2,
+                dashArray: '6 4'
             }).addTo(map);
         }
 
@@ -524,22 +553,39 @@
         }
 
         function resetCoords() {
-            currentLat = null; currentLng = null;
+            currentLat = null;
+            currentLng = null;
             document.getElementById('lat-input').value = '';
             document.getElementById('lng-input').value = '';
-            if (marker) { map.removeLayer(marker); marker = null; }
-            if (radiusCircle) { map.removeLayer(radiusCircle); radiusCircle = null; }
+            if (marker) {
+                map.removeLayer(marker);
+                marker = null;
+            }
+            if (radiusCircle) {
+                map.removeLayer(radiusCircle);
+                radiusCircle = null;
+            }
             document.getElementById('coord-dot').className = 'w-2 h-2 rounded-full bg-gray-300';
             document.getElementById('coord-label').textContent = 'Belum ada titik dipilih';
-            if(map) map.setView([DEFAULT_LAT, DEFAULT_LNG], 14);
+            if (map) map.setView([DEFAULT_LAT, DEFAULT_LNG], 14);
         }
 
         function useMyLocation() {
-            if (!navigator.geolocation) { showToast('Browser tidak mendukung geolokasi', 'error'); return; }
+            if (!navigator.geolocation) {
+                showToast('Browser tidak mendukung geolokasi', 'error');
+                return;
+            }
             showToast('Mendeteksi lokasi...', 'info');
             navigator.geolocation.getCurrentPosition(
-                pos => { setCoordinate(pos.coords.latitude, pos.coords.longitude); showToast('Lokasi berhasil dideteksi!', 'success'); },
-                err => { showToast('Gagal mendapatkan lokasi', 'error'); }, { enableHighAccuracy: true }
+                pos => {
+                    setCoordinate(pos.coords.latitude, pos.coords.longitude);
+                    showToast('Lokasi berhasil dideteksi!', 'success');
+                },
+                err => {
+                    showToast('Gagal mendapatkan lokasi', 'error');
+                }, {
+                    enableHighAccuracy: true
+                }
             );
         }
 
@@ -552,14 +598,24 @@
                 const data = await res.json();
                 if (data && data.length > 0) {
                     setCoordinate(parseFloat(data[0].lat), parseFloat(data[0].lon));
-                    if (!document.getElementById('full-address').value) { document.getElementById('full-address').value = data[0].display_name; }
+                    if (!document.getElementById('full-address').value) {
+                        document.getElementById('full-address').value = data[0].display_name;
+                    }
                     showToast('Lokasi ditemukan!', 'success');
-                } else { showToast('Lokasi tidak ditemukan.', 'error'); }
-            } catch (e) { showToast('Gagal mencari lokasi.', 'error'); }
+                } else {
+                    showToast('Lokasi tidak ditemukan.', 'error');
+                }
+            } catch (e) {
+                showToast('Gagal mencari lokasi.', 'error');
+            }
         }
 
         function showToast(msg, type = 'success') {
-            const colors = { success: 'text-green-400', error: 'text-red-400', info: 'text-blue-400' };
+            const colors = {
+                success: 'text-green-400',
+                error: 'text-red-400',
+                info: 'text-blue-400'
+            };
             document.getElementById('toast-icon').className = `w-4 h-4 flex-shrink-0 ${colors[type] || colors.success}`;
             document.getElementById('toast-msg').textContent = msg;
             const t = document.getElementById('toast');
@@ -572,7 +628,7 @@
             // Restore form fields
             document.getElementById('form-method').value = 'PUT';
             document.getElementById('client-form').action = `/client-locations/${clientData.id}`;
-            
+
             document.getElementById('client_name').value = clientData.client_name || '';
             document.getElementById('client_code').value = clientData.client_code || '';
             document.getElementById('industry').value = clientData.industry || '';
@@ -587,17 +643,16 @@
             document.getElementById('province').value = clientData.province || '';
             document.getElementById('postal_code').value = clientData.postal_code || '';
             document.getElementById('floor_unit').value = clientData.floor_unit || '';
-            
+
             document.getElementById('lat-input').value = clientData.latitude || '';
             document.getElementById('lng-input').value = clientData.longitude || '';
             document.getElementById('radius-slider').value = clientData.attendance_radius_meter || 100;
             document.getElementById('radius-val').textContent = (clientData.attendance_radius_meter || 100) + ' meter';
-            
+
             document.getElementById('work_start_time').value = clientData.work_start_time || '';
             document.getElementById('work_end_time').value = clientData.work_end_time || '';
 
             toggleForm(true); // Open the form view
         }
-
     </script>
 </x-app-layout>

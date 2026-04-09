@@ -13,17 +13,17 @@ class PlacementController extends Controller
      */
     public function placement()
     {
-        $tile = 'Placement - HRIS';
+        $title = 'Placement - HRIS';
         $employees = Employee::with('placement')->whereNotNull('work_location')->get();
         // dd($employees->placement->get());
 
-        return view('page-placement.placement', compact('tile', 'employees'));
+        return view('page-placement.placement', compact('title', 'employees'));
     }
 
     public function placementForm()
     {
-        $tile = 'Placement Form - HRIS';
-        return view('page-placement.placement-form', compact('tile'));
+        $title = 'Placement Form - HRIS';
+        return view('page-placement.placement-form', compact('title'));
     }
 
     /**

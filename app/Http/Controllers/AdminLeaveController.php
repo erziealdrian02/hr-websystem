@@ -8,7 +8,7 @@ class AdminLeaveController extends Controller
 {
     public function leaveAdmin()
     {
-        $tile = 'Leave Request - HRIS';
-        return view('page-admin.admin-leave', compact('tile'));
+        $title = 'Leave Request - HRIS';
+        return view('page-admin.admin-leave', compact('title'));
     }
 }

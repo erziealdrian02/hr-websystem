@@ -8,7 +8,7 @@ class AdminPayrollController extends Controller
 {
     public function payrollAdmin()
     {
-        $tile = 'All Payroll - HRIS';
-        return view('page-admin.admin-payroll', compact('tile'));
+        $title = 'All Payroll - HRIS';
+        return view('page-admin.admin-payroll', compact('title'));
     }
 }

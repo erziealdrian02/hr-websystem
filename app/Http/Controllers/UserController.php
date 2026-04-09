@@ -8,7 +8,7 @@ class UserController extends Controller
 {
     public function users()
     {
-        $tile = 'Users - HRIS';
-        return view('page-user.users', compact('tile'));
+        $title = 'Users - HRIS';
+        return view('page-user.users', compact('title'));
     }
 }

@@ -12,8 +12,8 @@ class OvertimeController extends Controller
      */
     public function overtime()
     {
-        $tile = 'Overtime - HRIS';
-        return view('page-overtime.overtime', compact('tile'));
+        $title = 'Overtime - HRIS';
+        return view('page-overtime.overtime', compact('title'));
     }
 
     /**

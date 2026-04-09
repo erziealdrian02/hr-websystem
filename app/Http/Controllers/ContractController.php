@@ -12,8 +12,8 @@ class ContractController extends Controller
      */
     public function contract()
     {
-        $tile = 'Contract - HRIS';
-        return view('page-contract.contract', compact('tile'));
+        $title = 'Contract - HRIS';
+        return view('page-contract.contract', compact('title'));
     }
 
     /**

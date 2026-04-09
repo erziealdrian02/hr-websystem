@@ -8,7 +8,7 @@ class AdminAttendanceController extends Controller
 {
     public function attendanceAdmin()
     {
-        $tile = 'All Attendance - HRIS';
-        return view('page-admin.admin-attendance', compact('tile'));
+        $title = 'All Attendance - HRIS';
+        return view('page-admin.admin-attendance', compact('title'));
     }
 }

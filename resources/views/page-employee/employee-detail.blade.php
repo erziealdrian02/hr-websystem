@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <!-- Back Button & Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
         <div>

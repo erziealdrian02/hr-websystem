@@ -12,8 +12,8 @@ class AttendanceController extends Controller
      */
     public function attendance()
     {
-        $tile = 'Attendance - HRIS';
-        return view('page-attendance.attendance', compact('tile'));
+        $title = 'Attendance - HRIS';
+        return view('page-attendance.attendance', compact('title'));
     }
 
     /**

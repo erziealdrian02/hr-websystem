@@ -12,8 +12,8 @@ class ReimburseController extends Controller
      */
     public function reimburse()
     {
-        $tile = 'Reimburse - HRIS';
-        return view('page-reimbuse.reimburse', compact('tile'));
+        $title = 'Reimburse - HRIS';
+        return view('page-reimbuse.reimburse', compact('title'));
     }
 
     /**

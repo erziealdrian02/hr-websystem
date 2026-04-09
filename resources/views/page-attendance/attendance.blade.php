@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
     <!-- Header -->
     <div class="mb-6 fade-in">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Attendance</h1>

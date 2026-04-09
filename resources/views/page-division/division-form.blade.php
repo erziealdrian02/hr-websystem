@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="$title">
 
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
@@ -252,7 +252,8 @@
             }
             showToast('Divisi berhasil dibuat! ✓', 'success');
             setTimeout(() => {
-                window.location.href = '{{ route('division.index') }}';
+                window.location.href = '{{ route('
+                division.index ') }}';
             }, 1000);
         }
     </script>

@@ -12,8 +12,8 @@ class PayrollController extends Controller
      */
     public function payroll()
     {
-        $tile = 'Payroll - HRIS';
-        return view('page-payroll.payroll', compact('tile'));
+        $title = 'Payroll - HRIS';
+        return view('page-payroll.payroll', compact('title'));
     }
 
     /**
