@@ -58,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/contract/delete/{id}', [ContractController::class, 'destroy'])->name('contract.destroy');
 
     Route::get('/attendance', [AttendanceController::class, 'attendance'])->name('attendance.index');
+    Route::post('/attendance/clock-in', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::put('/attendance/clock-out/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::post('/attendance/correction', [AttendanceController::class, 'storeCorrection'])->name('attendance.correction');
 
     Route::get('/leave', [LeaveController::class, 'leave'])->name('leave.index');
 

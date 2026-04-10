@@ -35,4 +35,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function corrections()
+    {
+        return $this->hasMany(AttendanceCorrection::class, 'attendance_id', 'id');
+    }
 }
