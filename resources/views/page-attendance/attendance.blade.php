@@ -48,7 +48,7 @@
                         @csrf
                         <input type="hidden" name="latitude" id="in_lat">
                         <input type="hidden" name="longitude" id="in_lng">
-                        
+
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1">Attendance Type</label>
                             <select name="attendance_type" id="attendance_type" onchange="toggleNoteField()" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring focus:ring-blue-300 focus:outline-none">
@@ -149,7 +149,8 @@
                                 <th class="pb-3 font-semibold text-center">Clock In</th>
                                 <th class="pb-3 font-semibold text-center">Clock Out</th>
                                 <th class="pb-3 font-semibold text-center">Working Hrs</th>
-                                <th class="pb-3 font-semibold">Status / Action</th>
+                                <th class="pb-3 font-semibold text-center">Action</th>
+                                <th class="pb-3 font-semibold">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700">
@@ -181,8 +182,10 @@
                                 <td class="py-4 text-center font-medium {{$attendance->status == 'late_in' ? 'text-orange-600' : 'text-gray-700 dark:text-gray-300'}}">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '--:--' }}</td>
                                 <td class="py-4 text-center font-medium text-gray-700 dark:text-gray-300">{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '--:--' }}</td>
                                 <td class="py-4 text-center font-medium text-gray-700 dark:text-gray-300">{{ $workingStr }}</td>
-                                <td class="py-4 flex gap-2 items-center">
+                                <td class="py-4 text-center">
                                     <span class="px-2.5 py-1 text-xs font-semibold rounded-full {{ $statusClass }} whitespace-nowrap">{{ $statusLabel }}</span>
+                                </td>
+                                <td class="py-4">
                                     @if(in_array($attendance->status, ['incomplete', 'late_in']) && !$hasCorrection)
                                     <button onclick="openCorrectionModal('{{ $attendance->id }}')" class="p-1 px-2 text-[10px] uppercase bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded shadow-sm border border-red-200 whitespace-nowrap">Correction</button>
                                     @elseif($hasCorrection)
@@ -225,28 +228,28 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase">Corrected In</label>
-                        <input type="time" name="corrected_clock_in" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Corrected In</label>
+                        <input type="time" name="corrected_clock_in" required class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300 focus:ring focus:ring-blue-500/30 focus:outline-none dark:bg-white/5 dark:border-white/10 dark:text-slate-300">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase">Corrected Out</label>
-                        <input type="time" name="corrected_clock_out" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Corrected Out</label>
+                        <input type="time" name="corrected_clock_out" required class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300 focus:ring focus:ring-blue-500/30 focus:outline-none dark:bg-white/5 dark:border-white/10 dark:text-slate-300">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase">Reason</label>
-                    <textarea name="reason" rows="2" required placeholder="Forgot to punch out due to..." class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Reason</label>
+                    <textarea name="reason" rows="2" required placeholder="Forgot to punch out due to..." class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300 focus:ring focus:ring-blue-500/30 focus:outline-none dark:bg-white/5 dark:border-white/10 dark:text-slate-300"></textarea>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase">Proof File (PDF)</label>
-                    <input type="file" name="proof_file" accept=".pdf" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Proof File (PDF)</label>
+                    <input type="file" name="proof_file" accept=".pdf" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300 focus:ring focus:ring-blue-500/30 focus:outline-none dark:bg-white/5 dark:border-white/10 dark:text-slate-300 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700">
                 </div>
 
                 <!-- Footer -->
                 <div class="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
-                    <button type="button" data-modal-close class="px-5 py-2 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">Cancel</button>
+                    <button type="button" data-modal-close class="px-5 py-2 text-sm font-semibold text-slate-400 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all">Cancel</button>
                     <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-md shadow-blue-500/20">Submit Request</button>
                 </div>
             </form>

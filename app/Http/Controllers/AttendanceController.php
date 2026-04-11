@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\AttendanceCorrection;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class AttendanceController extends Controller
 
         $workStartTime = \Carbon\Carbon::parse($clientLocation->work_start_time);
         $now = now();
-        
+
         $status = 'on_time';
         $locationNote = '';
 
@@ -77,7 +78,7 @@ class AttendanceController extends Controller
             if ($distance > $clientLocation->attendance_radius_meter) {
                 return redirect()->back()->with('error', 'Out of range. Distance: ' . round($distance) . 'm. Max: ' . $clientLocation->attendance_radius_meter . 'm.');
             }
-            
+
             $status = $now->format('H:i') > $workStartTime->format('H:i') ? 'late_in' : 'on_time';
             $locationNote = 'Within radius (' . round($distance) . 'm)';
         } elseif ($type === 'wfh') {
@@ -108,7 +109,7 @@ class AttendanceController extends Controller
         $attendance->location_note = $locationNote;
         $attendance->ip_address = $request->ip();
         $attendance->created_by = Auth::id();
-        
+
         $attendance->save();
 
         return redirect()->back()->with('success', 'Clock in successful at ' . $attendance->clock_in);
@@ -145,28 +146,29 @@ class AttendanceController extends Controller
 
     public function storeCorrection(Request $request)
     {
-        $request->validate([
-            'attendance_id' => 'required',
-            'corrected_clock_in' => 'required',
-            'corrected_clock_out' => 'required',
-            'reason' => 'required',
-            'proof_file' => 'nullable|file|mimes:pdf|max:2048'
-        ]);
+        // $request->validate([
+        //     'attendance_id' => 'required',
+        //     'corrected_clock_in' => 'required',
+        //     'corrected_clock_out' => 'required',
+        //     'reason' => 'required',
+        //     'proof_file' => 'nullable|file|mimes:pdf|max:2048'
+        // ]);
 
         $path = null;
         if ($request->hasFile('proof_file')) {
             $path = $request->file('proof_file')->store('corrections', 'public');
         }
 
-        \App\Models\AttendanceCorrection::create([
-            'attendance_id' => $request->attendance_id,
-            'corrected_clock_in' => $request->corrected_clock_in,
-            'corrected_clock_out' => $request->corrected_clock_out,
-            'reason' => $request->reason,
-            'proof_file_path' => $path,
-            'status' => 'pending',
-            'created_by' => Auth::id()
-        ]);
+        $attendanceCorrection = new AttendanceCorrection();
+        $attendanceCorrection->attendance_id = $request->attendance_id;
+        $attendanceCorrection->corrected_clock_in = $request->corrected_clock_in;
+        $attendanceCorrection->corrected_clock_out = $request->corrected_clock_out;
+        $attendanceCorrection->reason = $request->reason;
+        $attendanceCorrection->proof_file_path = $path;
+        $attendanceCorrection->status = 'pending';
+        $attendanceCorrection->created_by = Auth::id();
+
+        $attendanceCorrection->save();
 
         return redirect()->back()->with('success', 'Correction request submitted successfully.');
     }
