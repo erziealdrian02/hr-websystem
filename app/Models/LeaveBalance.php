@@ -4,27 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Leave extends Model
+class LeaveBalance extends Model
 {
-    protected $table = 'leaves';
+    protected $table = 'leave_balances';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id',
         'employee_id',
         'user_id',
-        'leave_type',
-        'start_date',
-        'end_date',
-        'duration_days',
-        'reason',
-        'attachment',
-        'status',
-        'approved_by',
-        'approved_at',
-        'rejection_note',
+        'year',
+        'annual_leave_quota',
+        'annual_leave_used',
+        'sick_leave_quota',
+        'sick_leave_used',
+        'unpaid_leave_quota',
+        'unpaid_leave_used',
         'created_by',
         'updated_by'
     ];
