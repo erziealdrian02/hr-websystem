@@ -54,4 +54,9 @@ class Employee extends Model
     {
         return $this->belongsTo(Division::class, 'head_employee_id', 'id');
     }
+
+    public function overtime()
+    {
+        return $this->hasMany(Overtime::class, 'employee_id', 'id');
+    }
 }
