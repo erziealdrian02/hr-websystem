@@ -63,6 +63,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/correction', [AttendanceController::class, 'storeCorrection'])->name('attendance.correction');
 
     Route::get('/leave', [LeaveController::class, 'leave'])->name('leave.index');
+    Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
+    Route::delete('/leave/cancel/{id}', [LeaveController::class, 'destroy'])->name('leave.destroy');
 
     Route::get('/overtime', [OvertimeController::class, 'overtime'])->name('overtime.index');
 
