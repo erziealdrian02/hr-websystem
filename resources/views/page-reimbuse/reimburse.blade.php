@@ -214,10 +214,14 @@
 
                     <!-- Amount -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (Rp)</label>
-                        <input type="number" name="amount" required min="1"
-                            class="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg dark:bg-slate-700 dark:text-white focus:ring outline-none"
-                            placeholder="500000">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 dark:text-gray-400 font-medium">Rp</span>
+                            <input type="text" id="amountDisplay" required
+                                class="w-full pl-9 pr-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg dark:bg-slate-700 dark:text-white focus:ring outline-none"
+                                placeholder="500.000" oninput="formatAmountInput(this)">
+                            <input type="text" name="amount" id="amountRaw" class="hidden" required>
+                        </div>
                     </div>
 
                     <!-- Receipt Upload -->
@@ -301,6 +305,7 @@
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
                     document.getElementById('reimburseForm').reset();
+                    document.getElementById('amountRaw').value = '';
                     resetFileDropZone();
                 }, 300);
             }
@@ -338,6 +343,19 @@
                         </svg>
                         Sisa saldo: <strong>${formatted}</strong>
                     </span>`;
+                }
+            }
+
+            // ── Amount Formatting ───────────────────────────────────────────
+            function formatAmountInput(input) {
+                let val = input.value.replace(/[^0-9]/g, '');
+
+                if (val) {
+                    input.value = new Intl.NumberFormat('id-ID').format(val);
+                    document.getElementById('amountRaw').value = val;
+                } else {
+                    input.value = '';
+                    document.getElementById('amountRaw').value = '';
                 }
             }
 
