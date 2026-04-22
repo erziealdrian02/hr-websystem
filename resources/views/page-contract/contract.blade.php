@@ -6,21 +6,6 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contract Management</h1>
                 <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage employee working contracts and monitor expiration dates (PKWT/PKWTT).</p>
             </div>
-            <button data-modal-target="contractModal" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center hover-scale">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                New Contract
-            </button>
-        </div>
-<x-app-layout>
-    <div class="js-datatable-container" data-per-page="10">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 fade-in">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contract Management</h1>
-                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage employee working contracts and monitor expiration dates (PKWT/PKWTT).</p>
-            </div>
             <button onclick="openContractModal('create')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center hover-scale">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -44,9 +29,6 @@
         </div>
         @endif
 
-        <div class="mb-4">
-            <input type="text" class="js-search-input w-full md:w-1/3 py-2 px-4 shadow-sm text-sm border border-gray-200 dark:border-gray-600 rounded-lg dark:bg-slate-800 dark:text-white outline-none focus:ring focus:ring-blue-300" placeholder="Search employee or type...">
-        </div>
         <div class="mb-4">
             <input type="text" class="js-search-input w-full md:w-1/3 py-2 px-4 shadow-sm text-sm border border-gray-200 dark:border-gray-600 rounded-lg dark:bg-slate-800 dark:text-white outline-none focus:ring focus:ring-blue-300" placeholder="Search employee or type...">
         </div>

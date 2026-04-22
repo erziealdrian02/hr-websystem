@@ -31,12 +31,16 @@ class LeaveController extends Controller
      */
     public function leave()
     {
-        $tile         = 'Leave - HRIS';
+        $title         = 'Leave - HRIS';
         $user         = Auth::user();
         $leaves       = Leave::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         $leaveBalance = LeaveBalance::where('user_id', $user->id)->first();
 
-        return view('page-leave.leave', compact('tile', 'leaves', 'leaveBalance'));
+        return view('page-leave.leave', compact(
+            'title',
+            'leaves',
+            'leaveBalance'
+        ));
     }
 
     /**

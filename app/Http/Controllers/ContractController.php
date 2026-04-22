@@ -14,7 +14,7 @@ class ContractController extends Controller
      */
     public function contract()
     {
-        $tile = 'Contract - HRIS';
+        $title = 'Contract - HRIS';
         $contracts = Contract::with('employee')->orderBy('created_at', 'desc')->get();
         $employees = Employee::all();
 
@@ -25,7 +25,7 @@ class ContractController extends Controller
             ->count();
 
         return view('page-contract.contract', compact(
-            'tile',
+            'title',
             'contracts',
             'employees',
             'expiringCount'

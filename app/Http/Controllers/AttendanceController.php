@@ -16,7 +16,7 @@ class AttendanceController extends Controller
      */
     public function attendance(Request $request)
     {
-        $tile = 'Attendance - HRIS';
+        $title = 'Attendance - HRIS';
         $month = $request->input('month', date('Y-m'));
         $parsedDate = \Carbon\Carbon::parse($month);
 
@@ -28,7 +28,7 @@ class AttendanceController extends Controller
             ->get();
 
         return view('page-attendance.attendance', compact(
-            'tile',
+            'title',
             'attendances',
             'month'
         ));
