@@ -9,6 +9,8 @@ class AdminReimburseController extends Controller
     public function reimburseAdmin()
     {
         $title = 'All Reimburse - HRIS';
-        return view('page-admin.admin-reimburse', compact('title'));
+        return view('page-admin.admin-reimburse', compact(
+            'title'
+        ));
     }
 }

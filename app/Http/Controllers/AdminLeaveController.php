@@ -9,6 +9,8 @@ class AdminLeaveController extends Controller
     public function leaveAdmin()
     {
         $title = 'Leave Request - HRIS';
-        return view('page-admin.admin-leave', compact('title'));
+        return view('page-admin.admin-leave', compact(
+            'title'
+        ));
     }
 }
