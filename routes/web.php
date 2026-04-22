@@ -77,6 +77,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/payroll', [PayrollController::class, 'payroll'])->name('payroll.index');
 
     Route::get('/reimburse', [ReimburseController::class, 'reimburse'])->name('reimburse.index');
+    Route::post('/reimburse/store', [ReimburseController::class, 'store'])->name('reimburse.store');
+    Route::delete('/reimburse/cancel/{id}', [ReimburseController::class, 'destroy'])->name('reimburse.destroy');
 
     Route::get('/performance', [PerformanceController::class, 'performance'])->name('performance.index');
 

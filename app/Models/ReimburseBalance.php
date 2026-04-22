@@ -5,27 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reimburse extends Model
+class ReimburseBalance extends Model
 {
     use HasFactory;
 
-    protected $table = 'reimburses';
+    protected $table = 'reimburse_balances';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id',
         'employee_id',
-        'reimburse_date',
         'category',
-        'description',
         'amount',
-        'receipt_path',
-        'status',
-        'approved_by',
-        'approved_at',
-        'notes',
         'created_by',
         'updated_by',
     ];
@@ -33,10 +25,5 @@ class Reimburse extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
-    }
-
-    public function approver()
-    {
-        return $this->belongsTo(Employee::class, 'approved_by', 'id');
     }
 }
