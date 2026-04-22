@@ -67,6 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/leave/cancel/{id}', [LeaveController::class, 'destroy'])->name('leave.destroy');
 
     Route::get('/overtime', [OvertimeController::class, 'overtime'])->name('overtime.index');
+    Route::post('/overtime/store', [OvertimeController::class, 'overtimeStore'])->name('overtime.store');
+    Route::put('/overtime/update/{id}', [OvertimeController::class, 'overtimeUpdate'])->name('overtime.update');
+    Route::delete('/overtime/delete/{id}', [OvertimeController::class, 'overtimeDestroy'])->name('overtime.destroy');
+
+    Route::patch('overtime/{overtime}/approve', [OvertimeController::class, 'overtimeApprove'])->name('overtime.approve');
+    Route::patch('overtime/{overtime}/reject',  [OvertimeController::class, 'overtimeReject'])->name('overtime.reject');
 
     Route::get('/payroll', [PayrollController::class, 'payroll'])->name('payroll.index');
 
