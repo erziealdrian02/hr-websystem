@@ -13,7 +13,7 @@
             <div class="absolute right-0 top-0 w-24 h-full bg-yellow-50 dark:bg-yellow-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Pending Requests</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-yellow-600 dark:text-yellow-400">12</span>
+                <span class="text-4xl font-extrabold text-yellow-600 dark:text-yellow-400">{{ $pendingCount }}</span>
                 <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Needs Approval</span>
             </div>
         </div>
@@ -21,7 +21,7 @@
             <div class="absolute right-0 top-0 w-24 h-full bg-blue-50 dark:bg-blue-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Approved This Month</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-blue-600 dark:text-blue-400">34</span>
+                <span class="text-4xl font-extrabold text-blue-600 dark:text-blue-400">{{ $approvedThisMonth }}</span>
                 <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Requests</span>
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="absolute right-0 top-0 w-24 h-full bg-red-50 dark:bg-red-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Rejected This Month</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-red-600 dark:text-red-400">2</span>
+                <span class="text-4xl font-extrabold text-red-600 dark:text-red-400">{{ $rejectedThisMonth }}</span>
                 <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Requests</span>
             </div>
         </div>
@@ -60,49 +60,119 @@
                         <th class="px-6 py-4 font-semibold text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700">
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=Alex+Carter&background=random" class="w-8 h-8 rounded-full">
-                            Alex Carter
-                        </td>
-                        <td class="px-6 py-4">Annual Leave</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">12 May - 14 May 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">3 Days</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Family vacation out of town</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500">Pending</span></td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-green-600 hover:text-green-700 font-medium mr-3">Approve</button>
-                            <button class="text-red-500 hover:text-red-700 font-medium">Reject</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=random" class="w-8 h-8 rounded-full">
-                            Sarah Smith
-                        </td>
-                        <td class="px-6 py-4">Sick Leave</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">20 Feb - 21 Feb 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">2 Days</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Severe Flu (MC attached)</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Approved</span></td>
-                        <td class="px-6 py-4 text-right"><button class="text-blue-600 hover:text-blue-800 font-medium">View</button></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" class="w-8 h-8 rounded-full">
-                            John Doe
-                        </td>
-                        <td class="px-6 py-4">Unpaid Leave</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">01 Jun - 03 Jun 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">3 Days</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Visa processing</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Rejected</span></td>
-                        <td class="px-6 py-4 text-right"><button class="text-blue-600 hover:text-blue-800 font-medium">View</button></td>
-                    </tr>
+                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700" id="leaveTableBody">
+                    @forelse($leaves as $leave)
+                        @php
+                            $statusClass = match($leave->status) {
+                                'approved' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+                                'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+                                default => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500'
+                            };
+                            $employeeName = $leave->employee ? $leave->employee->first_name . ' ' . $leave->employee->last_name : 'Unknown Employee';
+                        @endphp
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors" data-leave-id="{{ $leave->id }}">
+                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($employeeName) }}&background=random" class="w-8 h-8 rounded-full">
+                                {{ $employeeName }}
+                            </td>
+                            <td class="px-6 py-4">{{ ucfirst($leave->leave_type) }} Leave</td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                {{ \Carbon\Carbon::parse($leave->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($leave->end_date)->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ $leave->duration_days }} Days</td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs" title="{{ $leave->reason }}">{{ $leave->reason }}</td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
+                                    {{ ucfirst($leave->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                @if($leave->status === 'pending')
+                                    <button onclick="evaluateLeave('{{ $leave->id }}', 'approve')" class="text-green-600 hover:text-green-700 font-medium mr-3 transition-colors">Approve</button>
+                                    <button onclick="evaluateLeave('{{ $leave->id }}', 'reject')" class="text-red-500 hover:text-red-700 font-medium transition-colors">Reject</button>
+                                @else
+                                    <span class="text-gray-400 text-xs">—</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg class="w-10 h-10 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+                                    </svg>
+                                    <p class="text-sm">No leave requests found.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
         <div class="js-pagination-controls"></div>
     </div>
+
+    <!-- CSRF Token for AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <script>
+        async function evaluateLeave(id, action) {
+            if (!confirm(`Are you sure you want to ${action} this leave request?`)) return;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const url = `/admin/leave/${id}/${action}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (window.showToast) {
+                        window.showToast('Success', data.message, false);
+                    } else {
+                        alert(data.message);
+                    }
+
+                    // Update row UI dynamically
+                    const row = document.querySelector(`tr[data-leave-id="${id}"]`);
+                    if (row) {
+                        const badge = row.querySelector('.status-badge');
+                        badge.textContent = action === 'approve' ? 'Approved' : 'Rejected';
+                        badge.className = action === 'approve' 
+                            ? 'status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                            : 'status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+                        
+                        // Hide buttons
+                        const actionsCell = row.querySelector('td:last-child');
+                        actionsCell.innerHTML = '<span class="text-gray-400 text-xs">—</span>';
+                    }
+
+                    // Reload page after a little delay to refresh counts
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    if (window.showToast) {
+                        window.showToast('Error', data.message, true);
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.showToast) {
+                    window.showToast('Error', 'Terjadi kesalahan sistem.', true);
+                } else {
+                    alert('Terjadi kesalahan sistem.');
+                }
+            }
+        }
+    </script>
 </x-app-layout>

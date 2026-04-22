@@ -71,8 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/overtime/update/{id}', [OvertimeController::class, 'overtimeUpdate'])->name('overtime.update');
     Route::delete('/overtime/delete/{id}', [OvertimeController::class, 'overtimeDestroy'])->name('overtime.destroy');
 
-    Route::patch('overtime/{overtime}/approve', [OvertimeController::class, 'overtimeApprove'])->name('overtime.approve');
-    Route::patch('overtime/{overtime}/reject',  [OvertimeController::class, 'overtimeReject'])->name('overtime.reject');
+    // Note: Admin evaluation routes are below with other admin routes
 
     Route::get('/payroll', [PayrollController::class, 'payroll'])->name('payroll.index');
 
@@ -86,17 +85,31 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile.index');
 
-    // Admin Route
-    Route::get('/leave-request', [AdminLeaveController::class, 'leaveAdmin'])->name('leave.index.admin');
-    Route::get('/all-attendance', [AdminAttendanceController::class, 'attendanceAdmin'])->name('attendance.index.admin');
-    Route::get('/overtime-request', [AdminOvertimeController::class, 'overtimeAdmin'])->name('overtime.index.admin');
-    Route::get('/all-payroll', [AdminPayrollController::class, 'payrollAdmin'])->name('payroll.index.admin');
-    Route::get('/reimburse-approval', [AdminReimburseController::class, 'reimburseAdmin'])->name('reimburse.index.admin');
-
     // Rute Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Admin Route
+    Route::get('/leave-request', [AdminLeaveController::class, 'leaveAdmin'])->name('leave.index.admin');
+    Route::patch('/admin/leave/{id}/approve', [AdminLeaveController::class, 'approve'])->name('admin.leave.approve');
+    Route::patch('/admin/leave/{id}/reject', [AdminLeaveController::class, 'reject'])->name('admin.leave.reject');
+
+    Route::get('/all-attendance', [AdminAttendanceController::class, 'attendanceAdmin'])->name('attendance.index.admin');
+    Route::patch('/admin/attendance-correction/{id}/approve', [AdminAttendanceController::class, 'approveCorrection'])->name('admin.attendance.correction.approve');
+    Route::patch('/admin/attendance-correction/{id}/reject', [AdminAttendanceController::class, 'rejectCorrection'])->name('admin.attendance.correction.reject');
+
+    Route::get('/overtime-request', [AdminOvertimeController::class, 'overtimeAdmin'])->name('overtime.index.admin');
+    Route::patch('/admin/overtime/{id}/approve', [AdminOvertimeController::class, 'approve'])->name('admin.overtime.approve');
+    Route::patch('/admin/overtime/{id}/reject', [AdminOvertimeController::class, 'reject'])->name('admin.overtime.reject');
+
+    Route::get('/all-payroll', [AdminPayrollController::class, 'payrollAdmin'])->name('payroll.index.admin');
+    Route::post('/admin/payroll/generate', [AdminPayrollController::class, 'generate'])->name('admin.payroll.generate');
+
+    Route::get('/reimburse-approval', [AdminReimburseController::class, 'reimburseAdmin'])->name('reimburse.index.admin');
+    Route::patch('/admin/reimburse/{id}/approve', [AdminReimburseController::class, 'approve'])->name('admin.reimburse.approve');
+    Route::patch('/admin/reimburse/{id}/reject', [AdminReimburseController::class, 'reject'])->name('admin.reimburse.reject');
+
 });
 
 require __DIR__ . '/auth.php';

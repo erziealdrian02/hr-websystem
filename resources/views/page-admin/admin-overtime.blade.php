@@ -13,7 +13,7 @@
             <div class="absolute right-0 top-0 w-24 h-full bg-yellow-50 dark:bg-yellow-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Pending Claims</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-yellow-600 dark:text-yellow-400">14</span>
+                <span class="text-4xl font-extrabold text-yellow-600 dark:text-yellow-400">{{ $pendingClaims }}</span>
                 <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Unapproved</span>
             </div>
         </div>
@@ -21,15 +21,15 @@
             <div class="absolute right-0 top-0 w-24 h-full bg-blue-50 dark:bg-blue-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Total OT Hours (This Month)</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-blue-600 dark:text-blue-400">240.5</span>
-                <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Hours</span>
+                <span class="text-4xl font-extrabold text-blue-600 dark:text-blue-400">{{ explode('h', $totalHoursThisMonth)[0] }}<span class="text-2xl">h</span> {{ trim(explode('h', $totalHoursThisMonth)[1] ?? '0m') }}</span>
+                <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Approved Only</span>
             </div>
         </div>
         <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
             <div class="absolute right-0 top-0 w-24 h-full bg-green-50 dark:bg-green-900/20 -skew-x-12 transform origin-top translate-x-4"></div>
             <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm uppercase tracking-wider mb-2">Est. Cost Impact</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-extrabold text-green-600 dark:text-green-400">Rp24.5<span class="text-2xl">M</span></span>
+                <span class="text-4xl font-extrabold text-green-600 dark:text-green-400">Rp{{ number_format($estCostImpact, 0, ',', '.') }}</span>
                 <span class="text-gray-500 dark:text-gray-400 font-medium pb-1">Approved Only</span>
             </div>
         </div>
@@ -68,62 +68,125 @@
                         <th class="px-6 py-4 font-semibold text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700">
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=Emma+Watson&background=random" class="w-8 h-8 rounded-full">
-                            Emma Watson
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">03 Apr 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-                            4.5 Hours<br>
-                            <span class="text-xs text-gray-400">18:00 - 22:30</span>
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Server Migration & Maintenance</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Rp 450,000</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500">Pending</span></td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-green-600 hover:text-green-700 font-medium mr-3">Approve</button>
-                            <button class="text-red-500 hover:text-red-700 font-medium">Reject</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=Michael+Scott&background=random" class="w-8 h-8 rounded-full">
-                            Michael Scott
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">01 Apr 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-                            3 Hours<br>
-                            <span class="text-xs text-gray-400">17:30 - 20:30</span>
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Q1 Financial Report Wrap-up</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Rp 300,000</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Approved</span></td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View Logs</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=Jim+Halpert&background=random" class="w-8 h-8 rounded-full">
-                            Jim Halpert
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">30 Mar 2026</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
-                            2 Hours<br>
-                            <span class="text-xs text-gray-400">18:00 - 20:00</span>
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs">Client Pitch Deck finalizing</td>
-                        <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Rp 200,000</td>
-                        <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Rejected</span></td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View Notes</button>
-                        </td>
-                    </tr>
+                <tbody class="text-sm divide-y divide-gray-100 dark:divide-gray-700" id="overtimeTableBody">
+                    @forelse($overtimes as $overtime)
+                        @php
+                            $statusClass = match($overtime->status) {
+                                'approved' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+                                'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+                                default => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500'
+                            };
+                            $employeeName = $overtime->employee ? $overtime->employee->first_name . ' ' . $overtime->employee->last_name : 'Unknown Employee';
+                            $hours = floor($overtime->duration_minutes / 60);
+                            $minutes = $overtime->duration_minutes % 60;
+                            $durationText = $hours > 0 ? "{$hours}h " : "";
+                            $durationText .= $minutes > 0 ? "{$minutes}m" : "";
+                            if($hours == 0 && $minutes == 0) $durationText = "0m";
+                        @endphp
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors" data-overtime-id="{{ $overtime->id }}">
+                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($employeeName) }}&background=random" class="w-8 h-8 rounded-full">
+                                {{ $employeeName }}
+                            </td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($overtime->overtime_date)->format('d M Y') }}</td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                {{ $durationText }}<br>
+                                <span class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($overtime->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($overtime->end_time)->format('H:i') }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300 truncate max-w-xs" title="{{ $overtime->description }}">{{ $overtime->description }}</td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Rp {{ number_format($overtime->overtime_pay, 0, ',', '.') }}</td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
+                                    {{ ucfirst($overtime->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                @if($overtime->status === 'pending')
+                                    <button onclick="evaluateOvertime('{{ $overtime->id }}', 'approve')" class="text-green-600 hover:text-green-700 font-medium mr-3 transition-colors">Approve</button>
+                                    <button onclick="evaluateOvertime('{{ $overtime->id }}', 'reject')" class="text-red-500 hover:text-red-700 font-medium transition-colors">Reject</button>
+                                @else
+                                    <span class="text-gray-400 text-xs">—</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg class="w-10 h-10 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    <p class="text-sm">No overtime claims found.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
         <div class="js-pagination-controls"></div>
     </div>
+
+    <!-- CSRF Token for AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <script>
+        async function evaluateOvertime(id, action) {
+            if (!confirm(`Are you sure you want to ${action} this overtime claim?`)) return;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const url = `/admin/overtime/${id}/${action}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (window.showToast) {
+                        window.showToast('Success', data.message, false);
+                    } else {
+                        alert(data.message);
+                    }
+
+                    // Update row UI dynamically
+                    const row = document.querySelector(`tr[data-overtime-id="${id}"]`);
+                    if (row) {
+                        const badge = row.querySelector('.status-badge');
+                        badge.textContent = action === 'approve' ? 'Approved' : 'Rejected';
+                        badge.className = action === 'approve' 
+                            ? 'status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                            : 'status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+                        
+                        // Hide buttons
+                        const actionsCell = row.querySelector('td:last-child');
+                        actionsCell.innerHTML = '<span class="text-gray-400 text-xs">—</span>';
+                    }
+
+                    // Reload page after a short delay
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    if (window.showToast) {
+                        window.showToast('Error', data.message, true);
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.showToast) {
+                    window.showToast('Error', 'Terjadi kesalahan sistem.', true);
+                } else {
+                    alert('Terjadi kesalahan sistem.');
+                }
+            }
+        }
+    </script>
 </x-app-layout>
