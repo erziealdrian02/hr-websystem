@@ -15,6 +15,7 @@ class OvertimeController extends Controller
      */
     public function overtime(Request $request)
     {
+        $title = 'Overtime - HRIS';
         $employeeId = Auth::id();
         $month = $request->input('month', date('Y-m'));
         $parsedDate = Carbon::parse($month);
@@ -39,7 +40,12 @@ class OvertimeController extends Controller
         // Stats for the selected month
         $stats = $this->getStats($employeeId, $parsedDate);
 
-        return view('page-overtime.overtime', compact('overtimes', 'stats', 'month'));
+        return view('page-overtime.overtime', compact(
+            'title',
+            'overtimes',
+            'stats',
+            'month'
+        ));
     }
 
     /**
