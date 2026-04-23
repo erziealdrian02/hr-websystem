@@ -83,7 +83,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/users', [UserController::class, 'users'])->name('users.index');
 
-    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile.index');
+    Route::get('/my-profile', [ProfileController::class, 'profile'])->name('profile.index');
+    Route::post('/my-profile/update', [ProfileController::class, 'updateEmployeeData'])->name('profile.data.update');
 
     // Rute Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
