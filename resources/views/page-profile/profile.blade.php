@@ -107,7 +107,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            {{ ucfirst($employee?->work_location ?? 'Office') }}
+                            {{ ucfirst($employee?->placement->clientLocation->client_name ?? 'Office') }}
                         </span>
                         <span class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Work Location</p>
-                                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ ucfirst($employee?->work_location ?? '-') }}</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ ucfirst($employee?->placement->clientLocation->client_name ?? '-') }}</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Work Email</p>
