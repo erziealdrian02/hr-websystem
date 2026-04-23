@@ -85,6 +85,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-profile', [ProfileController::class, 'profile'])->name('profile.index');
     Route::post('/my-profile/update', [ProfileController::class, 'updateEmployeeData'])->name('profile.data.update');
+    Route::put('/my-profile/identity', [ProfileController::class, 'updateIdentity'])->name('profile.identity.update');
+    Route::put('/my-profile/bank', [ProfileController::class, 'updateBank'])->name('profile.bank.update');
+    Route::post('/my-profile/emergency', [ProfileController::class, 'storeEmergency'])->name('profile.emergency.store');
+    Route::put('/my-profile/emergency/{id}', [ProfileController::class, 'updateEmergency'])->name('profile.emergency.update');
+    Route::delete('/my-profile/emergency/{id}', [ProfileController::class, 'destroyEmergency'])->name('profile.emergency.destroy');
 
     // Rute Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -110,7 +115,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/reimburse-approval', [AdminReimburseController::class, 'reimburseAdmin'])->name('reimburse.index.admin');
     Route::patch('/admin/reimburse/{id}/approve', [AdminReimburseController::class, 'approve'])->name('admin.reimburse.approve');
     Route::patch('/admin/reimburse/{id}/reject', [AdminReimburseController::class, 'reject'])->name('admin.reimburse.reject');
-
 });
 
 require __DIR__ . '/auth.php';

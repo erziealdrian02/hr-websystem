@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\EmployeeIndentities;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +16,13 @@ class ProfileController extends Controller
     {
         $title = 'My Profile - HRIS';
         $user = Auth::user();
-        $employee = $user->employee;
+        $employee = $user->employee()->with(['identity', 'bank', 'emergency', 'division', 'manager', 'payroll'])->first();
+        $emergencies = $employee?->emergency ?? collect();
         return view('page-profile.profile', compact(
             'title',
             'user',
-            'employee'
+            'employee',
+            'emergencies'
         ));
     }
 
@@ -71,6 +74,69 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.index')->with('success', 'Profile updated successfully.');
     }
+
+    public function updateIdentity(Request $request)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return Redirect::back()->with('error', 'Employee data not found.');
+        }
+
+        if ($request->hasFile('ktp_document')) {
+            $path = $request->file('ktp_document')->store('employees/docs/' . $employee->id, 'public');
+            $identityData['ktp_document_path'] = $path;
+        }
+
+        // Handle NPWP document
+        if ($request->hasFile('npwp_document')) {
+            $path = $request->file('npwp_document')->store('employees/docs/' . $employee->id, 'public');
+            $identityData['npwp_document_path'] = $path;
+        }
+
+        EmployeeIndentities::updateOrCreate(
+            ['employee_id' => $employee->id],
+            [
+                'nik_ktp'               => $identityData['nik_ktp'],
+                'npwp'                  => $identityData['npwp'],
+                'bpjs_ketenagakerjaan'  => $identityData['bpjs_ketenagakerjaan'],
+                'bpjs_kesehatan'        => $identityData['bpjs_kesehatan'],
+                'passport_number'       => $identityData['passport_number'],
+                'tax_status_ptkp'       => $identityData['tax_status_ptkp'],
+                'ktp_document_path'     => $identityData['ktp_document_path'] ?? null,
+                'npwp_document_path'    => $identityData['npwp_document_path'] ?? null,
+            ]
+        );
+
+        return Redirect::route('profile.index')->with('success', 'Identity updated successfully.');
+    }
+
+    public function updateBank()
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return Redirect::back()->with('error', 'Employee data not found.');
+        }
+
+        $validated = $request->validate([
+            'bank_name' => 'nullable|string|max:100',
+            'bank_account_number' => 'nullable|string|max:50',
+            'bank_account_name' => 'nullable|string|max:100',
+        ]);
+
+        $employee->update($validated);
+
+        return Redirect::route('profile.index')->with('success', 'Bank updated successfully.');
+    }
+
+    public function storeEmergency() {}
+
+    public function updateEmergency() {}
+
+    public function destroyEmergency() {}
 
     /**
      * Display the user's profile form.
