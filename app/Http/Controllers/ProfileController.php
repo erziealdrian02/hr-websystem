@@ -84,35 +84,33 @@ class ProfileController extends Controller
             return Redirect::back()->with('error', 'Employee data not found.');
         }
 
+        // Ambil semua input dulu
+        $identityData = EmployeeIndentities::where('employee_id', $employee->id)->first();
+        $identityData->nik_ktp = $request->nik_ktp;
+        $identityData->npwp = $request->npwp;
+        $identityData->bpjs_ketenagakerjaan = $request->bpjs_ketenagakerjaan;
+        $identityData->bpjs_kesehatan = $request->bpjs_kesehatan;
+        $identityData->passport_number = $request->passport_number;
+        $identityData->tax_status_ptkp = $request->tax_status_ptkp;
+        $identityData->tax_status_ptkp = $request->tax_status_ptkp;
+        // Handle KTP document
         if ($request->hasFile('ktp_document')) {
-            $path = $request->file('ktp_document')->store('employees/docs/' . $employee->id, 'public');
-            $identityData['ktp_document_path'] = $path;
+            $identityData['ktp_document_path'] = $request->file('ktp_document')
+                ->store('employees/docs/' . $employee->id, 'public');
         }
 
         // Handle NPWP document
         if ($request->hasFile('npwp_document')) {
-            $path = $request->file('npwp_document')->store('employees/docs/' . $employee->id, 'public');
-            $identityData['npwp_document_path'] = $path;
+            $identityData['npwp_document_path'] = $request->file('npwp_document')
+                ->store('employees/docs/' . $employee->id, 'public');
         }
 
-        EmployeeIndentities::updateOrCreate(
-            ['employee_id' => $employee->id],
-            [
-                'nik_ktp'               => $identityData['nik_ktp'],
-                'npwp'                  => $identityData['npwp'],
-                'bpjs_ketenagakerjaan'  => $identityData['bpjs_ketenagakerjaan'],
-                'bpjs_kesehatan'        => $identityData['bpjs_kesehatan'],
-                'passport_number'       => $identityData['passport_number'],
-                'tax_status_ptkp'       => $identityData['tax_status_ptkp'],
-                'ktp_document_path'     => $identityData['ktp_document_path'] ?? null,
-                'npwp_document_path'    => $identityData['npwp_document_path'] ?? null,
-            ]
-        );
+        $identityData->save();
 
         return Redirect::route('profile.index')->with('success', 'Identity updated successfully.');
     }
 
-    public function updateBank()
+    public function updateBank(Request $request)
     {
         $user = Auth::user();
         $employee = $user->employee;

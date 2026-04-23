@@ -670,7 +670,7 @@
                         </div>
                         <select id="gender" name="gender" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
                             <option value="">Select Gender</option>
-                            @foreach(['Male','Female'] as $g)
+                            @foreach(['male','female'] as $g)
                             <option value="{{ $g }}" {{ old('gender', $employee?->gender) === $g ? 'selected' : '' }}>{{ $g }}</option>
                             @endforeach
                         </select>
@@ -737,7 +737,7 @@
                         </div>
                         <select id="marital_status" name="marital_status" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
                             <option value="">Select Status</option>
-                            @foreach(['Single','Married','Divorced','Widowed'] as $s)
+                            @foreach(['single','married','divorced','widowed'] as $s)
                             <option value="{{ $s }}" {{ old('marital_status', $employee?->marital_status) === $s ? 'selected' : '' }}>{{ $s }}</option>
                             @endforeach
                         </select>
