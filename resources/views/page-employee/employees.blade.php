@@ -47,7 +47,28 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 fade-in js-grid-body" style="animation-delay: 0.2s;">
             @foreach ($employees as $employee)
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden hover:shadow-md transition-shadow hover-scale group">
-                <div class="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative">
+                @php
+                $gradients = [
+                'from-blue-500 to-indigo-600',
+                'from-purple-500 to-pink-500',
+                'from-green-400 to-emerald-600',
+                'from-orange-400 to-red-500',
+                'from-cyan-400 to-blue-500',
+                ];
+
+                $randomGradient = $gradients[array_rand($gradients)];
+
+                $hasCover = $employee?->background_photo;
+
+                $coverStyle = $hasCover
+                ? "background-image: url('" . asset('storage/' . $employee->background_photo) . "');"
+                : "";
+
+                $coverClass = $hasCover
+                ? "bg-cover bg-center"
+                : "bg-gradient-to-r $randomGradient";
+                @endphp
+                <div class="h-24 {{ $coverClass }} relative" style="{{ $coverStyle }}">
                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         @csrf
                         @method('DELETE')
