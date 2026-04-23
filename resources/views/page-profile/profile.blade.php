@@ -516,36 +516,81 @@
                         <x-modal name="edit-emergency-{{ $emergency->id }}" focusable>
                             <form method="POST" action="{{ route('profile.emergency.update', $emergency->id) }}" class="p-6">
                                 @csrf @method('PUT')
-                                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Edit Emergency Contact</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                                {{-- Modal Header --}}
+                                <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                                     <div>
-                                        <x-input-label for="contact_name_{{ $emergency->id }}" value="Contact Name" />
-                                        <x-text-input id="contact_name_{{ $emergency->id }}" name="contact_name" type="text" class="mt-1 block w-full"
-                                            :value="old('contact_name', $emergency->contact_name)" required />
-                                    </div>
-                                    <div>
-                                        <x-input-label for="relationship_{{ $emergency->id }}" value="Relationship" />
-                                        <select id="relationship_{{ $emergency->id }}" name="relationship"
-                                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                            @foreach(['Spouse','Parent','Sibling','Child','Friend','Other'] as $rel)
-                                            <option value="{{ $rel }}" {{ old('relationship', $emergency->relationship) === $rel ? 'selected' : '' }}>{{ $rel }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <x-input-label for="phone_number_{{ $emergency->id }}" value="Phone Number" />
-                                        <x-text-input id="phone_number_{{ $emergency->id }}" name="phone_number" type="text" class="mt-1 block w-full"
-                                            :value="old('phone_number', $emergency->phone_number)" required />
-                                    </div>
-                                    <div class="md:col-span-2">
-                                        <x-input-label for="address_{{ $emergency->id }}" value="Address" />
-                                        <textarea id="address_{{ $emergency->id }}" name="address" rows="3"
-                                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('address', $emergency->address) }}</textarea>
+                                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Emergency Contact</h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update this emergency contact's details</p>
                                     </div>
                                 </div>
-                                <div class="mt-6 flex justify-end gap-3">
-                                    <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                                    <x-primary-button>Save Changes</x-primary-button>
+
+                                {{-- Contact Name & Relationship --}}
+                                <div class="grid grid-cols-2 gap-5">
+                                    <div class="space-y-1.5">
+                                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Contact Name</label>
+                                        <div class="relative group">
+                                            <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
+                                            <input type="text" id="contact_name_{{ $emergency->id }}" name="contact_name" required
+                                                value="{{ old('contact_name', $emergency->contact_name) }}"
+                                                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Relationship</label>
+                                        <div class="relative group">
+                                            <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                            </div>
+                                            <select id="relationship_{{ $emergency->id }}" name="relationship"
+                                                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                                                @foreach(['Spouse','Parent','Sibling','Child','Friend','Other'] as $rel)
+                                                <option value="{{ $rel }}" {{ old('relationship', $emergency->relationship) === $rel ? 'selected' : '' }}>{{ $rel }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Phone Number --}}
+                                <div class="space-y-1.5">
+                                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Phone Number</label>
+                                    <div class="relative group">
+                                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                            </svg>
+                                        </div>
+                                        <input type="text" id="phone_number_{{ $emergency->id }}" name="phone_number" required
+                                            value="{{ old('phone_number', $emergency->phone_number) }}"
+                                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                                    </div>
+                                </div>
+
+                                {{-- Address --}}
+                                <div class="space-y-1.5">
+                                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Address</label>
+                                    <textarea id="address_{{ $emergency->id }}" name="address" rows="2"
+                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none">{{ old('address', $emergency->address) }}</textarea>
+                                </div>
+
+                                {{-- Footer --}}
+                                <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                                    <button type="button" x-on:click="$dispatch('close')"
+                                        class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                        class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                                        <span class="relative">Save Changes</span>
+                                    </button>
                                 </div>
                             </form>
                         </x-modal>
@@ -574,245 +619,559 @@
     <x-modal name="edit-info" focusable>
         <form method="POST" action="{{ route('profile.data.update') }}" class="p-6">
             @csrf
-            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Edit Personal Information</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- Modal Header -->
+            <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                 <div>
-                    <x-input-label for="phone_number" value="Phone Number" />
-                    <x-text-input id="phone_number" name="phone_number" type="text" class="mt-1 block w-full" :value="old('phone_number', $employee?->phone_number)" />
-                </div>
-                <div>
-                    <x-input-label for="personal_email" value="Personal Email" />
-                    <x-text-input id="personal_email" name="personal_email" type="email" class="mt-1 block w-full" :value="old('personal_email', $employee?->personal_email)" />
-                </div>
-                <div>
-                    <x-input-label for="gender" value="Gender" />
-                    <select id="gender" name="gender" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Gender</option>
-                        @foreach(['Male','Female'] as $g)
-                        <option value="{{ $g }}" {{ old('gender', $employee?->gender) === $g ? 'selected' : '' }}>{{ $g }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <x-input-label for="religion" value="Religion" />
-                    <select id="religion" name="religion" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Religion</option>
-                        @foreach(['Islam','Protestant','Catholic','Hindu','Buddhist','Confucian','Other'] as $r)
-                        <option value="{{ $r }}" {{ old('religion', $employee?->religion) === $r ? 'selected' : '' }}>{{ $r }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <x-input-label for="place_of_birth" value="Place of Birth" />
-                    <x-text-input id="place_of_birth" name="place_of_birth" type="text" class="mt-1 block w-full" :value="old('place_of_birth', $employee?->place_of_birth)" />
-                </div>
-                <div>
-                    <x-input-label for="date_of_birth" value="Date of Birth" />
-                    <x-text-input id="date_of_birth" name="date_of_birth" type="date" class="mt-1 block w-full" :value="old('date_of_birth', $employee?->date_of_birth)" />
-                </div>
-                <div>
-                    <x-input-label for="marital_status" value="Marital Status" />
-                    <select id="marital_status" name="marital_status" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Status</option>
-                        @foreach(['Single','Married','Divorced','Widowed'] as $s)
-                        <option value="{{ $s }}" {{ old('marital_status', $employee?->marital_status) === $s ? 'selected' : '' }}>{{ $s }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <x-input-label for="blood_type" value="Blood Type" />
-                    <select id="blood_type" name="blood_type" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Type</option>
-                        @foreach(['A','B','AB','O'] as $b)
-                        <option value="{{ $b }}" {{ old('blood_type', $employee?->blood_type) === $b ? 'selected' : '' }}>{{ $b }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <x-input-label for="domicile_address" value="Domicile Address" />
-                    <textarea id="domicile_address" name="domicile_address" rows="3"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('domicile_address', $employee?->domicile_address) }}</textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <x-input-label for="ktp_address" value="KTP Address" />
-                    <textarea id="ktp_address" name="ktp_address" rows="3"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('ktp_address', $employee?->ktp_address) }}</textarea>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Emergency Contact</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update information</p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                <x-primary-button>Save Changes</x-primary-button>
+
+            {{-- Phone & Email --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Phone Number</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="phone_number" name="phone_number"
+                            value="{{ old('phone_number', $employee?->phone_number) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Personal Email</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <input type="email" id="personal_email" name="personal_email"
+                            value="{{ old('personal_email', $employee?->personal_email) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
             </div>
+
+            {{-- Gender & Religion --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Gender</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <select id="gender" name="gender" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Gender</option>
+                            @foreach(['Male','Female'] as $g)
+                            <option value="{{ $g }}" {{ old('gender', $employee?->gender) === $g ? 'selected' : '' }}>{{ $g }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Religion</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <select id="religion" name="religion" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Religion</option>
+                            @foreach(['Islam','Protestant','Catholic','Hindu','Buddhist','Confucian','Other'] as $r)
+                            <option value="{{ $r }}" {{ old('religion', $employee?->religion) === $r ? 'selected' : '' }}>{{ $r }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Place of Birth & Date of Birth --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Place of Birth</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="place_of_birth" name="place_of_birth"
+                            value="{{ old('place_of_birth', $employee?->place_of_birth) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Date of Birth</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <input type="date" id="date_of_birth" name="date_of_birth"
+                            value="{{ old('date_of_birth', $employee?->date_of_birth) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+            </div>
+
+            {{-- Marital Status & Blood Type --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Marital Status</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <select id="marital_status" name="marital_status" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Status</option>
+                            @foreach(['Single','Married','Divorced','Widowed'] as $s)
+                            <option value="{{ $s }}" {{ old('marital_status', $employee?->marital_status) === $s ? 'selected' : '' }}>{{ $s }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Blood Type</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                        <select id="blood_type" name="blood_type" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Type</option>
+                            @foreach(['A','B','AB','O'] as $b)
+                            <option value="{{ $b }}" {{ old('blood_type', $employee?->blood_type) === $b ? 'selected' : '' }}>{{ $b }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Domicile Address --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Domicile Address</label>
+                <textarea id="domicile_address" name="domicile_address" rows="2"
+                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none">{{ old('domicile_address', $employee?->domicile_address) }}</textarea>
+            </div>
+
+            {{-- KTP Address --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">KTP Address</label>
+                <textarea id="ktp_address" name="ktp_address" rows="2"
+                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none">{{ old('ktp_address', $employee?->ktp_address) }}</textarea>
+            </div>
+
+            {{-- Footer --}}
+            <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                    <span class="relative">Save Changes</span>
+                </button>
+            </div>
+
         </form>
     </x-modal>
 
-    <!-- ════ EDIT IDENTITY MODAL ════ -->
+    {{-- ════ EDIT IDENTITY MODAL ════ --}}
     <x-modal name="edit-identity" focusable>
-        <form method="POST" action="{{ route('profile.identity.update') }}" class="p-6">
+        <form method="POST" action="{{ route('profile.identity.update') }}" enctype="multipart/form-data" class="p-6">
             @csrf @method('PUT')
-            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Edit Official Identification</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {{-- Modal Header --}}
+            <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                 <div>
-                    <x-input-label for="nik_ktp" value="NIK (KTP)" />
-                    <x-text-input id="nik_ktp" name="nik_ktp" type="text" class="mt-1 block w-full"
-                        :value="old('nik_ktp', $employee?->identity?->nik_ktp)" />
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Official Identification</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update your identity documents below</p>
                 </div>
-                <div>
-                    <x-input-label for="npwp" value="NPWP" />
-                    <x-text-input id="npwp" name="npwp" type="text" class="mt-1 block w-full"
-                        :value="old('npwp', $employee?->identity?->npwp)" />
+            </div>
+
+            {{-- NIK & NPWP --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">NIK (KTP)</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2" />
+                            </svg>
+                        </div>
+                        <input type="text" id="nik_ktp" name="nik_ktp"
+                            value="{{ old('nik_ktp', $employee?->identity?->nik_ktp) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
                 </div>
-                <div>
-                    <x-input-label for="bpjs_ketenagakerjaan" value="BPJS Ketenagakerjaan" />
-                    <x-text-input id="bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan" type="text" class="mt-1 block w-full"
-                        :value="old('bpjs_ketenagakerjaan', $employee?->identity?->bpjs_ketenagakerjaan)" />
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">NPWP</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="npwp" name="npwp"
+                            value="{{ old('npwp', $employee?->identity?->npwp) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
                 </div>
-                <div>
-                    <x-input-label for="bpjs_kesehatan" value="BPJS Kesehatan" />
-                    <x-text-input id="bpjs_kesehatan" name="bpjs_kesehatan" type="text" class="mt-1 block w-full"
-                        :value="old('bpjs_kesehatan', $employee?->identity?->bpjs_kesehatan)" />
+            </div>
+
+            {{-- BPJS Ketenagakerjaan & BPJS Kesehatan --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">BPJS Ketenagakerjaan</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan"
+                            value="{{ old('bpjs_ketenagakerjaan', $employee?->identity?->bpjs_ketenagakerjaan) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
                 </div>
-                <div>
-                    <x-input-label for="passport_number" value="Passport Number" />
-                    <x-text-input id="passport_number" name="passport_number" type="text" class="mt-1 block w-full"
-                        :value="old('passport_number', $employee?->identity?->passport_number)" />
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">BPJS Kesehatan</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="bpjs_kesehatan" name="bpjs_kesehatan"
+                            value="{{ old('bpjs_kesehatan', $employee?->identity?->bpjs_kesehatan) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
                 </div>
-                <div>
-                    <x-input-label for="tax_status_ptkp" value="Tax Status (PTKP)" />
-                    <select id="tax_status_ptkp" name="tax_status_ptkp"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select PTKP</option>
-                        @foreach(['TK/0','TK/1','TK/2','TK/3','K/0','K/1','K/2','K/3','K/I/0','K/I/1','K/I/2','K/I/3'] as $ptkp)
-                        <option value="{{ $ptkp }}" {{ old('tax_status_ptkp', $employee?->identity?->tax_status_ptkp) === $ptkp ? 'selected' : '' }}>{{ $ptkp }}</option>
-                        @endforeach
-                    </select>
+            </div>
+
+            {{-- Passport & Tax Status --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Passport Number</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="passport_number" name="passport_number"
+                            value="{{ old('passport_number', $employee?->identity?->passport_number) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
                 </div>
-                <!-- Document uploads -->
-                <div>
-                    <x-input-label for="ktp_document" value="KTP Document (PDF/Image)" />
-                    <input type="file" id="ktp_document" name="ktp_document" accept="image/*,.pdf"
-                        class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Tax Status (PTKP)</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <select id="tax_status_ptkp" name="tax_status_ptkp"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select PTKP</option>
+                            @foreach(['TK/0','TK/1','TK/2','TK/3','K/0','K/1','K/2','K/3','K/I/0','K/I/1','K/I/2','K/I/3'] as $ptkp)
+                            <option value="{{ $ptkp }}" {{ old('tax_status_ptkp', $employee?->identity?->tax_status_ptkp) === $ptkp ? 'selected' : '' }}>{{ $ptkp }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Document Uploads --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">KTP Document</label>
+                    <div class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl transition-all">
+                        <input type="file" id="ktp_document" name="ktp_document" accept="image/*,.pdf"
+                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                    </div>
                     @if($employee?->identity?->ktp_document_path)
-                    <p class="text-xs text-green-500 mt-1">✓ File already uploaded</p>
+                    <p class="text-xs text-green-500 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        File already uploaded
+                    </p>
                     @endif
                 </div>
-                <div>
-                    <x-input-label for="npwp_document" value="NPWP Document (PDF/Image)" />
-                    <input type="file" id="npwp_document" name="npwp_document" accept="image/*,.pdf"
-                        class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">NPWP Document</label>
+                    <div class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl transition-all">
+                        <input type="file" id="npwp_document" name="npwp_document" accept="image/*,.pdf"
+                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                    </div>
                     @if($employee?->identity?->npwp_document_path)
-                    <p class="text-xs text-green-500 mt-1">✓ File already uploaded</p>
+                    <p class="text-xs text-green-500 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        File already uploaded
+                    </p>
                     @endif
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                <x-primary-button>Save Changes</x-primary-button>
+
+            {{-- Footer --}}
+            <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                    <span class="relative">Save Changes</span>
+                </button>
             </div>
         </form>
     </x-modal>
 
-    <!-- ════ EDIT BANK MODAL ════ -->
+
+    {{-- ════ EDIT BANK MODAL ════ --}}
     <x-modal name="edit-bank" focusable>
         <form method="POST" action="{{ route('profile.bank.update') }}" class="p-6">
             @csrf @method('PUT')
-            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Edit Bank Details</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {{-- Modal Header --}}
+            <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                 <div>
-                    <x-input-label for="bank_name" value="Bank Name" />
-                    <select id="bank_name" name="bank_name"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Bank</option>
-                        @foreach(['BCA','BRI','BNI','Mandiri','BTN','CIMB Niaga','Danamon','Permata','Maybank','BRI Syariah','BSI','Other'] as $bank)
-                        <option value="{{ $bank }}" {{ old('bank_name', $employee?->bank?->bank_name) === $bank ? 'selected' : '' }}>{{ $bank }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <x-input-label for="bank_branch" value="Branch" />
-                    <x-text-input id="bank_branch" name="bank_branch" type="text" class="mt-1 block w-full"
-                        :value="old('bank_branch', $employee?->bank?->bank_branch)" />
-                </div>
-                <div>
-                    <x-input-label for="account_number" value="Account Number" />
-                    <x-text-input id="account_number" name="account_number" type="text" class="mt-1 block w-full font-mono"
-                        :value="old('account_number', $employee?->bank?->account_number)" required />
-                </div>
-                <div>
-                    <x-input-label for="account_holder_name" value="Account Holder Name" />
-                    <x-text-input id="account_holder_name" name="account_holder_name" type="text" class="mt-1 block w-full uppercase"
-                        :value="old('account_holder_name', $employee?->bank?->account_holder_name)" required />
-                    <p class="text-xs text-gray-400 mt-1">Harus sesuai dengan nama di buku tabungan</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Bank Details</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update your bank account information</p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                <x-primary-button>Save Changes</x-primary-button>
+
+            {{-- Bank Name & Branch --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Bank Name</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18M3 18h18" />
+                            </svg>
+                        </div>
+                        <select id="bank_name" name="bank_name"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Bank</option>
+                            @foreach(['BCA','BRI','BNI','Mandiri','BTN','CIMB Niaga','Danamon','Permata','Maybank','BRI Syariah','BSI','Other'] as $bank)
+                            <option value="{{ $bank }}" {{ old('bank_name', $employee?->bank?->bank_name) === $bank ? 'selected' : '' }}>{{ $bank }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Branch</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="bank_branch" name="bank_branch"
+                            value="{{ old('bank_branch', $employee?->bank?->bank_branch) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+            </div>
+
+            {{-- Account Number & Holder Name --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Account Number</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="account_number" name="account_number" required
+                            value="{{ old('account_number', $employee?->bank?->account_number) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white font-mono placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Account Holder Name</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="account_holder_name" name="account_holder_name" required
+                            value="{{ old('account_holder_name', $employee?->bank?->account_holder_name) }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white uppercase placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Harus sesuai dengan nama di buku tabungan</p>
+                </div>
+            </div>
+
+            {{-- Footer --}}
+            <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                    <span class="relative">Save Changes</span>
+                </button>
             </div>
         </form>
     </x-modal>
 
-    <!-- ════ ADD EMERGENCY MODAL ════ -->
+
+    {{-- ════ ADD EMERGENCY MODAL ════ --}}
     <x-modal name="add-emergency" focusable>
         <form method="POST" action="{{ route('profile.emergency.store') }}" class="p-6">
             @csrf
-            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Add Emergency Contact</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {{-- Modal Header --}}
+            <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                 <div>
-                    <x-input-label for="new_contact_name" value="Contact Name" />
-                    <x-text-input id="new_contact_name" name="contact_name" type="text" class="mt-1 block w-full"
-                        :value="old('contact_name')" required />
-                </div>
-                <div>
-                    <x-input-label for="new_relationship" value="Relationship" />
-                    <select id="new_relationship" name="relationship"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Select Relationship</option>
-                        @foreach(['Spouse','Parent','Sibling','Child','Friend','Other'] as $rel)
-                        <option value="{{ $rel }}" {{ old('relationship') === $rel ? 'selected' : '' }}>{{ $rel }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <x-input-label for="new_phone_number" value="Phone Number" />
-                    <x-text-input id="new_phone_number" name="phone_number" type="text" class="mt-1 block w-full"
-                        :value="old('phone_number')" required />
-                </div>
-                <div class="md:col-span-2">
-                    <x-input-label for="new_address" value="Address" />
-                    <textarea id="new_address" name="address" rows="3"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('address') }}</textarea>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Add Emergency Contact</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add a new emergency contact person</p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                <x-primary-button>Add Contact</x-primary-button>
+
+            {{-- Contact Name & Relationship --}}
+            <div class="grid grid-cols-2 gap-5">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Contact Name</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="new_contact_name" name="contact_name" required
+                            value="{{ old('contact_name') }}"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Relationship</label>
+                    <div class="relative group">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <select id="new_relationship" name="relationship"
+                            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none">
+                            <option value="">Select Relationship</option>
+                            @foreach(['Spouse','Parent','Sibling','Child','Friend','Other'] as $rel)
+                            <option value="{{ $rel }}" {{ old('relationship') === $rel ? 'selected' : '' }}>{{ $rel }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Phone Number --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Phone Number</label>
+                <div class="relative group">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-gray-400 transition-colors group-focus-within:text-blue-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="new_phone_number" name="phone_number" required
+                        value="{{ old('phone_number') }}"
+                        class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                </div>
+            </div>
+
+            {{-- Address --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Address</label>
+                <textarea id="new_address" name="address" rows="2"
+                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none">{{ old('address') }}</textarea>
+            </div>
+
+            {{-- Footer --}}
+            <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                    <span class="relative">Add Contact</span>
+                </button>
             </div>
         </form>
     </x-modal>
 
-    <!-- Edit Photos Modal -->
+
+    {{-- ════ EDIT PHOTOS MODAL ════ --}}
     <x-modal name="edit-photos" focusable>
         <form method="POST" action="{{ route('profile.data.update') }}" enctype="multipart/form-data" class="p-6">
             @csrf
-            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">Edit Profile Photos</h2>
-            <div class="space-y-5">
+
+            {{-- Modal Header --}}
+            <div class="-mx-6 -mt-6 px-6 py-4 mb-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-700/30">
                 <div>
-                    <x-input-label for="profile_photo" value="Profile Photo" />
-                    <p class="text-xs text-gray-400 mt-0.5 mb-2">Recommended: square, min 200×200px</p>
-                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*"
-                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                </div>
-                <div>
-                    <x-input-label for="background_photo" value="Cover Background" />
-                    <p class="text-xs text-gray-400 mt-0.5 mb-2">Recommended: landscape, min 1200×300px</p>
-                    <input type="file" id="background_photo" name="background_photo" accept="image/*"
-                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile Photos</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Upload your profile and cover photos</p>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                <x-primary-button>Upload</x-primary-button>
+
+            {{-- Profile Photo --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Profile Photo</label>
+                <p class="text-xs text-gray-400 dark:text-gray-500">Recommended: square, min 200×200px</p>
+                <div class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl transition-all">
+                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*"
+                        class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                </div>
+            </div>
+
+            {{-- Background Photo --}}
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Cover Background</label>
+                <p class="text-xs text-gray-400 dark:text-gray-500">Recommended: landscape, min 1200×300px</p>
+                <div class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-gray-600 rounded-xl transition-all">
+                    <input type="file" id="background_photo" name="background_photo" accept="image/*"
+                        class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50">
+                </div>
+            </div>
+
+            {{-- Footer --}}
+            <div class="pt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700 !mt-8">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-xl transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="relative group px-6 py-2.5 text-sm font-semibold text-white overflow-hidden rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 hover:-translate-y-0.5">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 transition-all"></div>
+                    <span class="relative">Upload</span>
+                </button>
             </div>
         </form>
     </x-modal>
