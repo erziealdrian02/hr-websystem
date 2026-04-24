@@ -20,6 +20,11 @@ class Employee extends Model
         return $this->belongsTo(Division::class, 'division_id', 'id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function bank()
     {
         return $this->hasOne(EmployeeBank::class, 'employee_id', 'id');

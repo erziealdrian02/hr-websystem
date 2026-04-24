@@ -28,10 +28,27 @@ class User extends Authenticatable
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'employee_id',
+        'name',
+        'email',
+        'email_verified_at',
+        'password',
+        'role',
+        'remember_token',
+        'is_active',
+        'created_by',
+        'updated_by',
+        'last_login_at',
+        'last_login_ip',
+        'last_login_user_agent',
+    ];
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

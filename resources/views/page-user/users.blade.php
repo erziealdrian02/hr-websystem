@@ -48,29 +48,29 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
-
+                        @foreach ($dataUsers as $dataUser)
                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
                                     <div>
-                                        <p class="font-medium text-gray-900 dark:text-white">Admin HRistopher</p>
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">admin@hris.internal</p>
+                                        <p class="font-medium text-gray-900 dark:text-white">{{ $dataUser->name ?? '-' }}</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-xs">{{ $dataUser->employee->job_title ?? '-' }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">adminhr</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">{{ $dataUser->email ?? '-' }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:border-purple-800 dark:text-purple-400 text-xs font-semibold uppercase tracking-wider">
-                                    Super Admin
+                                    {{ $dataUser->role ?? '-' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="flex items-center text-green-600 dark:text-green-400 text-sm font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span> Active
+                                <span class="flex items-center text-{{ $dataUser->is_active ? 'green' : 'red' }}-600 dark:text-{{ $dataUser->is_active ? 'green' : 'red' }}-400 text-sm font-medium">
+                                    <span class="w-2 h-2 rounded-full bg-{{ $dataUser->is_active ? 'green' : 'red' }}-500 mr-2"></span> {{ $dataUser->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">Just now</td>
+                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ $dataUser->last_login_at ? $dataUser->last_login_at->diffForHumans() : '-' }}</td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors tooltip" title="Edit">
@@ -81,6 +81,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @endforeach
 
                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
                             <td class="px-6 py-4">
