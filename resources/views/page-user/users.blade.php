@@ -82,39 +82,6 @@
                             </td>
                         </tr>
                         @endforeach
-
-                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
-                                    <div>
-                                        <p class="font-medium text-gray-900 dark:text-white">John Doe</p>
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs">john.d@hris.internal</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300 font-medium">johndoe</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded border border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 text-xs font-semibold uppercase tracking-wider">
-                                    Employee
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="flex items-center text-green-600 dark:text-green-400 text-sm font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span> Active
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">2 hours ago</td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors tooltip" title="Edit">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
