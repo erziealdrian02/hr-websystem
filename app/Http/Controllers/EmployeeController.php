@@ -9,11 +9,13 @@ use App\Models\EmployeeEmergency;
 use App\Models\EmployeeIndentities;
 use App\Models\EmployeePayroll;
 use App\Models\Payroll;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -348,6 +350,16 @@ class EmployeeController extends Controller
         $employeeData->created_by = Auth::user()->id;
         $employeeData->updated_by = Auth::user()->id;
 
+        $userData = new User();
+        $userData->id = (string) \Illuminate\Support\Str::uuid();
+        $userData->employee_id = $uuid;
+        $userData->name = $request->full_name;
+        $userData->email = $request->work_email;
+        $userData->password = Hash::make('12345678');
+        $userData->role = 'employee';
+        $userData->created_by = Auth::user()->id;
+        $userData->updated_by = Auth::user()->id;
+
         // Handle upload foto profil
         if ($request->hasFile('profile_photo')) {
             $employeeData['profile_photo'] = $request
@@ -477,6 +489,7 @@ class EmployeeController extends Controller
             $employeeEmergency->save();
         }
 
+        $userData->save();
         $employeePayroll->save();
         $employeeBank->save();
         $employeeIdentity->save();
