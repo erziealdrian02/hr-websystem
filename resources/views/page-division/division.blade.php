@@ -64,18 +64,19 @@
                     Department Head
                 </p>
                 <div class="flex items-center gap-3">
+                    @if ($division->manager_division)
                     @if($division->manager_division->profile_photo)
                     <img src="{{ asset('storage/' . $division->manager_division->profile_photo) }}" class="w-9 h-9 rounded-full" alt="Employee">
                     @else
                     <img src="https://ui-avatars.com/api/?name={{ urlencode($division->manager_division->full_name ?? 'N/A') }}&background=random&color=fff&size=200" class="w-9 h-9 rounded-full" alt="Employee">
                     @endif
-
+                    @endif
                     <div class="min-w-0">
                         <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                             {{ $division->manager_division->full_name ?? '-' }}
                         </p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {{ $division->manager_division->job_title ?? '-' }}
+                            {{ $division->manager_division->job_title ?? $division->head_title ?? '-' }}
                         </p>
                     </div>
                 </div>
