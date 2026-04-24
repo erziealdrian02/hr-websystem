@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\EmployeeBank;
+use App\Models\EmployeeEmergency;
 use App\Models\EmployeeIndentities;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -119,22 +121,84 @@ class ProfileController extends Controller
             return Redirect::back()->with('error', 'Employee data not found.');
         }
 
-        $validated = $request->validate([
-            'bank_name' => 'nullable|string|max:100',
-            'bank_account_number' => 'nullable|string|max:50',
-            'bank_account_name' => 'nullable|string|max:100',
-        ]);
+        $bankData = EmployeeBank::where('employee_id', $employee->id)->first();
+        $bankData->bank_name = $request->bank_name;
+        $bankData->bank_branch = $request->bank_branch;
+        $bankData->account_number = $request->account_number;
+        $bankData->account_holder_name = $request->account_holder_name;
 
-        $employee->update($validated);
+        $bankData->save();
 
         return Redirect::route('profile.index')->with('success', 'Bank updated successfully.');
     }
 
-    public function storeEmergency() {}
+    public function storeEmergency(Request $request)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
 
-    public function updateEmergency() {}
+        if (!$employee) {
+            return Redirect::back()->with('error', 'Employee data not found.');
+        }
 
-    public function destroyEmergency() {}
+        $employeeEmergency = new EmployeeEmergency();
+        $employeeEmergency->id = (string) \Illuminate\Support\Str::uuid();
+        $employeeEmergency->employee_id = $employee->id;
+        $employeeEmergency->contact_name = $request->contact_name;
+        $employeeEmergency->relationship = $request->relationship;
+        $employeeEmergency->phone_number = $request->phone_number;
+        $employeeEmergency->is_primary = $request->is_primary ?? 0;
+        $employeeEmergency->address = $request->address;
+        $employeeEmergency->created_by = Auth::user()->id;
+        $employeeEmergency->updated_by = Auth::user()->id;
+
+        $employeeEmergency->save();
+
+        return Redirect::route('profile.index')->with('success', 'Emergency contact updated successfully.');
+    }
+
+    public function updateEmergency(Request $request, $id)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return Redirect::back()->with('error', 'Employee data not found.');
+        }
+
+        $employeeEmergency = EmployeeEmergency::where('id', $id)
+            ->where('employee_id', $employee->id)
+            ->firstOrFail();
+
+        $employeeEmergency->contact_name = $request->contact_name;
+        $employeeEmergency->relationship = $request->relationship;
+        $employeeEmergency->phone_number = $request->phone_number;
+        $employeeEmergency->is_primary = $request->is_primary ?? 0;
+        $employeeEmergency->address = $request->address;
+        $employeeEmergency->updated_by = Auth::user()->id;
+
+        $employeeEmergency->save();
+
+        return Redirect::route('profile.index')->with('success', 'Emergency contact updated successfully.');
+    }
+
+    public function destroyEmergency($id)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return Redirect::back()->with('error', 'Employee data not found.');
+        }
+
+        $employeeEmergency = EmployeeEmergency::where('id', $id)
+            ->where('employee_id', $employee->id)
+            ->firstOrFail();
+
+        $employeeEmergency->delete();
+
+        return Redirect::route('profile.index')->with('success', 'Emergency contact deleted successfully.');
+    }
 
     /**
      * Display the user's profile form.
